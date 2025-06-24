@@ -1,0 +1,75 @@
+<<<<<<< Updated upstream
+{
+  "name": "pdrrmo-training",
+  "version": "0.1.0",
+  "homepage": "/pdrrmo-training/",
+  "private": true,
+  "proxy": "http://localhost:5000",
+  "dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "cross-env": "^7.0.3",
+    "ls": "^0.2.1",
+    "lucide-react": "^0.479.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.2.0",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
+  },
+  "scripts": {
+    "start": "concurrently \"react-scripts start\" \"cd ../pdrrmo-backend && node server\"",
+    "build": "cross-env PUBLIC_URL=/pdrrmo-training react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.0.9"
+  }
+}
+=======
+{
+  "name": "pdrrmo-training",
+  "version": "1.0.0",
+  "description": "A project for PDRRMO",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm start",
+    "build": "npm run build"
+  },
+  "dependencies": {
+    "build": "^0.1.4",
+    "fs-extra": "^11.3.0",
+    "webpack": "^5.99.9"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-loader": "^10.0.0",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
+>>>>>>> Stashed changes

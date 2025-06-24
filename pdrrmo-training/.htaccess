@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /pdrrmo-training/
+  # RewriteBase /pdrrmo-training/
+
+  # Serve API requests directly
+  RewriteCond %{REQUEST_URI} ^/pdrrmo-training/api
+  # RewriteCond %{REQUEST_URI} ^/pdrrmo-training/pdrrmo-backend/api
+  RewriteRule ^ - [L]
+
+  # React Router fallback for SPA
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ /pdrrmo-training/build/index.html [L]
+  # RewriteRule ^ /pdrrmo-training/index.html [L]
+</IfModule>
