@@ -1,6 +1,7 @@
 const express = require("express");
-const { loginUser, registerUser, refreshToken } = require("../controllers/authController");
+const { loginUser, registerUser } = require("../controllers/authController");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
 const router = express.Router();
 
@@ -15,15 +16,15 @@ router.post("/refresh-token", async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(oldToken, "your-secret-key");
+    console.log("Received token:", oldToken);
+    const decoded = jwt.verify(oldToken, process.env.SECRET_KEY);
+    console.log("Decoded token:", decoded);
 
-    // Fetch user details from the database
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Generate a new token with user details
     const newToken = jwt.sign(
       {
         id: user._id,
@@ -32,7 +33,7 @@ router.post("/refresh-token", async (req, res) => {
         lastname: user.lastname,
         office: user.office,
       },
-      "your-secret-key",
+      process.env.SECRET_KEY,
       { expiresIn: "1h" }
     );
 
@@ -45,9 +46,9 @@ router.post("/refresh-token", async (req, res) => {
       token: newToken,
     });
   } catch (error) {
+    console.error("Error refreshing token:", error.message);
     res.status(401).json({ message: "Invalid or expired token." });
   }
 });
-
 
 module.exports = router;

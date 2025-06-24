@@ -34,9 +34,11 @@ const authorizeRoles = (...roles) => {
         return res.status(404).json({ message: "User not found." });
       }
 
-      if (!roles.includes(user.role.toLowerCase())) {
+// ...existing code...
+      if (!roles.includes(user.role)) {
         return res.status(403).json({ message: "Access denied." });
       }
+// ...existing code...
 
       next();
     } catch (error) {
@@ -66,6 +68,6 @@ const protect = async (req, res, next) => {
   }
 };
 
-const authorizeAdmin = authorizeRoles("admin", "superadmin");
+const authorizeAdmin = authorizeRoles("Admin", "superadmin");
 
 module.exports = { authenticate, authorizeRoles, authorizeAdmin, protect };

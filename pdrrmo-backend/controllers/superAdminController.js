@@ -5,7 +5,7 @@ const promoteUser = async (req, res) => {
     const { userId } = req.params;
     const { role } = req.body; // role can be "admin" or "superadmin"
 
-    if (!["admin", "superadmin"].includes(role)) {
+    if (!["Admin", "superadmin"].includes(role)) {
       return res.status(400).json({ message: "Invalid role." });
     }
 

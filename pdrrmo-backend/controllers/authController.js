@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 // Helper function to generate a token
 const generateToken = (userId, role, firstname, lastname, office) => {
-  const secretKey = process.env.SECRET_KEY || "your-secret-key";
+  const secretKey = process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597";
   const token = jwt.sign(
     { id: userId, role, firstname, lastname, office },
     secretKey,
@@ -30,14 +30,14 @@ const loginUser = async (req, res) => {
     if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials." });
 
     // Generate a new token
-    const token = generateToken
-    (
+    const token = generateToken(
       user._id,
       user.role,
       user.firstname,
       user.lastname,
       user.office
     );
+
 
     res.json({
       id: user._id,
@@ -99,7 +99,7 @@ const refreshToken = async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(oldToken, process.env.SECRET_KEY || "your-secret-key");
+    const decoded = jwt.verify(oldToken, process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597");
 
     // Fetch user details from the database
     const user = await User.findById(decoded.id);

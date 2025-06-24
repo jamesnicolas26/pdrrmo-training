@@ -6,10 +6,10 @@ module.exports = {
   target: 'node', // Ensure this is targeting Node.js
   externals: [nodeExternals()], // Exclude node modules from the bundle
   output: {
-    path: path.resolve(__dirname, '../build/backend'), // Output to root/build/backend
-    filename: 'server.bundle.js', // Backend bundle file
+    path: path.resolve(__dirname, 'build'), // Output directory
+    filename: 'server.bundle.js', // Output bundled file
   },
-  mode: 'production', // Change to 'development' for debugging
+  mode: 'production', // Set to 'development' for debugging
   module: {
     rules: [
       {
@@ -18,7 +18,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'], // Compile ES6+ to ES5
+            presets: ['@babel/preset-env'], // Use Babel to compile ES6+ to ES5
           },
         },
       },
