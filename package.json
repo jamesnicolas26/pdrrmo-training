@@ -1,0 +1,21 @@
+{
+  "name": "pdrrmo-training",
+  "version": "1.0.0",
+  "description": "A project for PDRRMO",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd pdrrmo-training && npm start",
+    "build": "npm run build"
+  },
+  "dependencies": {
+    "build": "^0.1.4",
+    "fs-extra": "^11.3.0",
+    "webpack": "^5.99.9"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-loader": "^10.0.0",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
