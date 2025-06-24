@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "concurrently \"react-scripts start\" \"cd ../pdrrmo-backend && node server\"",
-    "build": "set PUBLIC_URL=/pdrrmo-training &&react-scripts build",
+    "build": "cross-env PUBLIC_URL=/pdrrmo-training react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
