@@ -35,7 +35,8 @@ const allowedOrigins = [
   "https://bulacan.gov.ph",
   "https://pdrrmo.bulacan.gov.ph",
   "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
-  "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training"
+  "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training",
+  "https://pdrrmo-training.onrender.com"
 ];
 
 const corsOptions = {
@@ -98,10 +99,9 @@ app.use((err, req, res, next) => {
 });
 
 // Catch-All Route for React Frontend (Optional)
-const buildPath = path.join(__dirname, "../pdrrmo-training/build");
-app.use(express.static(buildPath));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(buildPath, "index.html"));
+app.use(express.static(path.join(__dirname, '../pdrrmo-training/build')))
+app.get("*", (_, res) => {
+  res.sendFile(path.resolve('../pdrrmo-training/build/index.html'));
 });
 
 // Start Server
