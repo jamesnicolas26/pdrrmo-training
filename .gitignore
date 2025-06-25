@@ -3,3 +3,5 @@
 /pdrrmo-training/build
 /pdrrmo-backend/.env
 /pdrrmo-backend/node_modules
+/pdrrmo-backend/package-lock.json
+/pdrrmo-backend/package.json
