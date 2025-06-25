@@ -1,14 +1,14 @@
-import "dotenv/config";
-import express from "express";
-import cors from "cors";
-import path from "path";
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const connectDB = require("./config/db.js");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const { authenticate, authorizeAdmin } = require("./middleware/authMiddleware");
+const trainingTitleRoute = require("./routes/trainingTitles");
+const officeRoutes = require("./routes/officeRoutes");
 import { fileURLToPath } from "url";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import { authenticate, authorizeAdmin } from "./middleware/authMiddleware.js";
-import trainingTitleRoute from "./routes/trainingTitles.js";
-import officeRoutes from "./routes/officeRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
