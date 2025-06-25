@@ -56,13 +56,13 @@ app.use(cors({
 
 
 // API Routes
-app.use("/pdrrmo-training/offices", officeRoutes);
-app.use("/pdrrmo-training", authRoutes);
-app.use("/pdrrmo-training/users", authenticate, authorizeAdmin, userRoutes);
-app.use("/pdrrmo-training/training-titles", trainingTitleRoute);
+app.use("/offices", officeRoutes);
+app.use("/", authRoutes);
+app.use("/users", authenticate, authorizeAdmin, userRoutes);
+app.use("/training-titles", trainingTitleRoute);
 
 // Test Endpoints
-app.get("/pdrrmo-training/status", (req, res) => {
+app.get("/status", (req, res) => {
   console.log("✅ Status endpoint hit");
   res.json({
     status: "ok",
@@ -71,7 +71,7 @@ app.get("/pdrrmo-training/status", (req, res) => {
   });
 });
 
-app.post("/pdrrmo-training/echo", (req, res) => {
+app.post("/echo", (req, res) => {
   const { message } = req.body;
   console.log("✅ Echo endpoint hit with message:", message);
   if (!message) {
