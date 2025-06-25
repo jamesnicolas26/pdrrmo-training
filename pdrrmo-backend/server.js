@@ -8,10 +8,8 @@ const userRoutes = require("./routes/userRoutes");
 const { authenticate, authorizeAdmin } = require("./middleware/authMiddleware");
 const trainingTitleRoute = require("./routes/trainingTitles");
 const officeRoutes = require("./routes/officeRoutes");
-import { fileURLToPath } from "url";
+const { fileURLToPath } = require("url");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
