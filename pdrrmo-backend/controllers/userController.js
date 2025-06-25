@@ -1,4 +1,4 @@
-const User = require("../models/user"); // Ensure the correct model is imported
+const User = require("../models/User"); // Ensure the correct model is imported
 const mongoose = require("mongoose");
 
 // Fetch all users
