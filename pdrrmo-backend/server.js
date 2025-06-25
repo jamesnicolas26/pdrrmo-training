@@ -8,7 +8,10 @@ const userRoutes = require("./routes/userRoutes");
 const { authenticate, authorizeAdmin } = require("./middleware/authMiddleware");
 const trainingTitleRoute = require("./routes/trainingTitles");
 const officeRoutes = require("./routes/officeRoutes");
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -29,40 +32,44 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // CORS Configuration
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5000",
-  "https://bulacan.gov.ph",
-  "https://pdrrmo.bulacan.gov.ph",
-  "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
-  "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training",
-  "https://pdrrmo-training.onrender.com",
-  "https://pdrrmo-training.onrender.com/pdrrmo-training",
-];
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "http://localhost:5000",
+//   "https://bulacan.gov.ph",
+//   "https://pdrrmo.bulacan.gov.ph",
+//   "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
+//   "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training",
+//   "https://pdrrmo-training.onrender.com",
+//   "https://pdrrmo-training.onrender.com/pdrrmo-training",
+// ];
+
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     console.log(`CORS request from origin: ${origin}`);
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       console.log(`✅ Allowed CORS origin: ${origin}`);
+//       callback(null, true);
+//     } else {
+//       console.error(`❌ Blocked CORS origin: ${origin}`);
+//       callback(new Error("CORS not allowed"));
+//     }
+//   },
+//   credentials: true,
+// }));
 
 app.use(cors({
-  origin: function (origin, callback) {
-    console.log(`CORS request from origin: ${origin}`);
-    if (!origin || allowedOrigins.includes(origin)) {
-      console.log(`✅ Allowed CORS origin: ${origin}`);
-      callback(null, true);
-    } else {
-      console.error(`❌ Blocked CORS origin: ${origin}`);
-      callback(new Error("CORS not allowed"));
-    }
-  },
-  credentials: true,
+  origin: "*", // Allow all origins
+  credentials: true, // Allow cookies and authorization headers
 }));
 
-
 // API Routes
-app.use("/offices", officeRoutes);
-app.use("/", authRoutes);
-app.use("/users", authenticate, authorizeAdmin, userRoutes);
-app.use("/training-titles", trainingTitleRoute);
+app.use("api/offices", officeRoutes);
+app.use("api/", authRoutes);
+app.use("api/users", authenticate, authorizeAdmin, userRoutes);
+app.use("api/training-titles", trainingTitleRoute);
 
 // Test Endpoints
-app.get("/status", (req, res) => {
+app.get("api/status", (req, res) => {
   console.log("✅ Status endpoint hit");
   res.json({
     status: "ok",
@@ -71,7 +78,7 @@ app.get("/status", (req, res) => {
   });
 });
 
-app.post("/echo", (req, res) => {
+app.post("api/echo", (req, res) => {
   const { message } = req.body;
   console.log("✅ Echo endpoint hit with message:", message);
   if (!message) {
@@ -81,16 +88,8 @@ app.post("/echo", (req, res) => {
   res.json({ echo: message });
 });
 
-app.use(express.static(path.resolve(__dirname, '../pdrrmo-training/build')));
-
-app.get('/static/*', (req, res) => {
-  const filePath = path.resolve(__dirname, '../pdrrmo-training/build', req.path);
-  console.log("Serving static file:", filePath);
-  res.sendFile(filePath);
-});
-
+app.use(express.static(path.join(__dirname,'../pdrrmo-training/build')));
 app.get('*', (req, res) => {
-  console.log("Serving index.html for:", req.path);
   res.sendFile(path.resolve(__dirname, '../pdrrmo-training/build/index.html'));
 });
 
