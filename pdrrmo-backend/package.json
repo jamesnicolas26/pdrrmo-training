@@ -1,7 +1,7 @@
 {
   "name": "pdrrmo-backend",
   "version": "1.0.0",
-  "homepage": "/pdrrmo-training",
+  "homepage": "https://pdrrmo-training.onrender.com",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

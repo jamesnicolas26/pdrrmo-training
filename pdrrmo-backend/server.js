@@ -7,7 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const { authenticate, authorizeAdmin } = require("./middleware/authMiddleware");
 const trainingTitleRoute = require("./routes/trainingTitles");
-const officeRoutes = require('./routes/officeRoutes');
+const officeRoutes = require("./routes/officeRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,13 +30,13 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // CORS Configuration
 const allowedOrigins = [
-  "http://localhost:3000", // React dev server
-  "http://localhost:5000", // Backend (if accessed directly)
+  "http://localhost:3000",
+  "http://localhost:5000",
   "https://bulacan.gov.ph",
   "https://pdrrmo.bulacan.gov.ph",
   "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
   "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training",
-  "https://pdrrmo-training.onrender.com"
+  "https://pdrrmo-training.onrender.com",
 ];
 
 const corsOptions = {
@@ -45,7 +45,7 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log("❌ CORS not allowed for:", origin);
+      console.error("❌ CORS not allowed for:", origin);
       callback(new Error("CORS not allowed"));
     }
   },
@@ -54,54 +54,45 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// API Routes without `/api` prefix
-try {
-  app.use("/pdrrmo-training/offices", officeRoutes);
-  console.log("✅ Registered route: /offices");
+// API Routes
+app.use("/pdrrmo-training/offices", officeRoutes);
+app.use("/pdrrmo-training", authRoutes);
+app.use("/pdrrmo-training/users", authenticate, authorizeAdmin, userRoutes);
+app.use("/pdrrmo-training/training-titles", trainingTitleRoute);
 
-  app.use("/pdrrmo-training", authRoutes);
-  console.log("✅ Registered route: /");
-
-  app.use("/pdrrmo-training/users", authenticate, authorizeAdmin, userRoutes);
-  console.log("✅ Registered route: /users");
-
-  app.use("/pdrrmo-training/training-titles", trainingTitleRoute);
-  console.log("✅ Registered route: /training-titles");
-} catch (err) {
-  console.error("❌ Error registering routes:", err.message);
-}
-
-// Test Endpoint
-app.get('pdrrmo-training/status', (req, res) => {
+// Test Endpoints
+app.get("/pdrrmo-training/status", (req, res) => {
   console.log("✅ Status endpoint hit");
   res.json({
-    status: 'ok',
-    message: 'API is running',
+    status: "ok",
+    message: "API is running",
     time: new Date().toISOString(),
   });
 });
 
-// Echo Test Endpoint
-app.post('pdrrmo-training/echo', (req, res) => {
+app.post("/pdrrmo-training/echo", (req, res) => {
   const { message } = req.body;
   console.log("✅ Echo endpoint hit with message:", message);
   if (!message) {
     console.error("❌ Echo endpoint: Missing 'message' in request body");
-    return res.status(400).json({ error: 'Message is required' });
+    return res.status(400).json({ error: "Message is required" });
   }
   res.json({ echo: message });
 });
 
-// Global Error Handling Middleware
+// Serve React Frontend
+app.use(express.static(path.join(__dirname, '../pdrrmo-training/build')));
+app.get('/static/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../pdrrmo-training/build', req.path));
+});
+app.get('*', (_, res) => {
+  res.sendFile(path.resolve(__dirname, '../pdrrmo-training/build/index.html'));
+});
+
+// Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error("❌ Unhandled error:", err.message);
   res.status(500).json({ message: "Internal Server Error", error: err.message });
-});
-
-// Catch-All Route for React Frontend (Optional)
-app.use(express.static(path.join(__dirname, '../pdrrmo-training/build')))
-app.get("*", (_, res) => {
-  res.sendFile(path.resolve('../pdrrmo-training/build/index.html'));
 });
 
 // Start Server
