@@ -32,14 +32,26 @@ export const AuthProvider = ({ children }) => {
     console.log("After logout:", localStorage.getItem("token"), localStorage.getItem("user"));
   };
 
-  const clearAndRegenerateToken = async () => {
+  const isTokenValid = (token) => {
+    if (!token) return false;
     try {
-      const oldToken = localStorage.getItem("token");
-      if (!oldToken) {
-        console.error("No token found to refresh.");
-        return;
-      }
+      const tokenExpiry = JSON.parse(atob(token.split(".")[1])).exp * 1000;
+      return tokenExpiry > Date.now();
+    } catch (error) {
+      console.error("Error parsing token:", error);
+      return false;
+    }
+  };
 
+  const clearAndRegenerateToken = async () => {
+    const oldToken = localStorage.getItem("token");
+    if (!oldToken || !isTokenValid(oldToken)) {
+      console.warn("No valid token found for refresh. Logging out.");
+      logout();
+      return;
+    }
+
+    try {
       const response = await fetch(`${API_BASE_URL}/refresh-token`, {
         method: "POST",
         headers: {
@@ -53,43 +65,49 @@ export const AuthProvider = ({ children }) => {
       }
 
       const data = await response.json();
-      setUser((prevUser) => ({
-        ...prevUser,
+      const updatedUser = {
+        ...user,
         token: data.token,
-        role: data.role || prevUser.role,
-      }));
+        role: data.role || user?.role,
+      };
+
+      setUser(updatedUser);
       localStorage.setItem("token", data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          ...user,
-          token: data.token,
-          role: data.role || user?.role,
-        })
-      );
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     } catch (error) {
       console.error("Error regenerating token:", error.message);
+      logout();
     }
   };
 
   useEffect(() => {
     const checkAndRefreshToken = async () => {
+      if (!user) return; // Prevent refresh when user is not logged in
+
       const token = localStorage.getItem("token");
+      if (!token || !isTokenValid(token)) {
+        console.log("Invalid or missing token. Logging out.");
+        logout();
+        return;
+      }
 
-      if (token) {
-        const tokenExpiry = JSON.parse(atob(token.split(".")[1])).exp * 1000;
-        const now = Date.now();
+      const tokenExpiry = JSON.parse(atob(token.split(".")[1])).exp * 1000;
+      const now = Date.now();
 
-        if (tokenExpiry - now < 5 * 60 * 1000) {
-          await clearAndRegenerateToken();
-        }
+      if (tokenExpiry - now < 5 * 60 * 1000) {
+        await clearAndRegenerateToken();
       }
     };
 
-    if (user) {
-      checkAndRefreshToken();
-    }
+    checkAndRefreshToken();
   }, [user]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token || !isTokenValid(token)) {
+      setUser(null);
+    }
+  }, []);
 
   const isAuthenticated = Boolean(user);
 

@@ -10,23 +10,23 @@ const Navbar = () => {
   const location = useLocation();
 
   // Fetch user role on component load
-  // useEffect(() => {
-  //   const fetchUserRole = async () => {
-  //     try {
-  //       const response = await fetch(`${API_BASE_URL}/users`, {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       });
-  //       const data = await response.json();
-  //       setUserRole(data.role);  // Store the user role
-  //     } catch (error) {
-  //       console.error("Error fetching user role:", error.message);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/users`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await response.json();
+        setUserRole(data.role);  // Store the user role
+      } catch (error) {
+        console.error("Error fetching user role:", error.message);
+      }
+    };
 
-  //   fetchUserRole();
-  // }, []);
+    fetchUserRole();
+  }, []);
 
   // Hide navbar on specific pages
 const hideNavbar =

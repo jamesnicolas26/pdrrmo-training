@@ -59,6 +59,8 @@ export default function App() {
         await clearAndRegenerateToken();
       } catch (error) {
         console.error("Error refreshing token:", error);
+        // Redirect to login if the token refresh fails
+        window.location.href = "/signin";
       }
     };
     refreshToken();
@@ -135,9 +137,9 @@ export default function App() {
       <Route
         path="/edituser/:id"
         element={
-          <PrivateRoute requiredRole={["Admin", "superadmin"]}>
+          <RoleProtectedRoute requiredRole={["Admin", "superadmin"]}>
             <EditUser users={users} updateUser={updateUser} />
-          </PrivateRoute>
+          </RoleProtectedRoute>
         }
       />
       <Route
