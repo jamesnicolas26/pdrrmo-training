@@ -37,6 +37,7 @@ const allowedOrigins = [
   "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
   "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training",
   "https://pdrrmo-training.onrender.com",
+  "https://pdrrmo-training.onrender.com/pdrrmo-training",
 ];
 
 const corsOptions = {
