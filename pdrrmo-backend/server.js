@@ -98,11 +98,11 @@ app.use((err, req, res, next) => {
 });
 
 // Catch-All Route for React Frontend (Optional)
-// const buildPath = path.join(__dirname, "../build");
-// app.use(express.static(buildPath));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(buildPath, "index.html"));
-// });
+const buildPath = path.join(__dirname, "../pdrrmo-training/build");
+app.use(express.static(buildPath));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(buildPath, "index.html"));
+});
 
 // Start Server
 app.listen(PORT, () => {

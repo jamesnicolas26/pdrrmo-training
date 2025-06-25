@@ -2,10 +2,11 @@
   "name": "pdrrmo-backend",
   "version": "1.0.0",
   "homepage": "/pdrrmo-training",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "webpack"
+    "start": "node pdrrmo-backend/server.js",
+    "dev": "nodemon pdrrmo-backend/server.js",
+    "build": "npm install && npm install --prefix pdrrmo-training && npm run build --prefix pdrrmo-training"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +20,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
-    "mongoose": "^8.15.1"
+    "mongoose": "^8.16.0"
   },
   "devDependencies": {
     "webpack-cli": "^6.0.1"

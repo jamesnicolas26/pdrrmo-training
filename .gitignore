@@ -1,0 +1,5 @@
+/node_modules
+/pdrrmo-training/node_modules
+/pdrrmo-training/build
+/pdrrmo-backend/.env
+/pdrrmo-backend/node_modules
