@@ -1,7 +1,7 @@
 {
   "name": "pdrrmo-training",
   "version": "0.1.0",
-  "homepage": "https://pdrrmo-training.onrender.com",
+  "homepage": "/pdrrmo-training",
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
