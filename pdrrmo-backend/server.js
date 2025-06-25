@@ -40,20 +40,20 @@ const allowedOrigins = [
   "https://pdrrmo-training.onrender.com/pdrrmo-training",
 ];
 
-const corsOptions = {
+app.use(cors({
   origin: function (origin, callback) {
-    console.log("CORS request from:", origin);
+    console.log(`CORS request from origin: ${origin}`);
     if (!origin || allowedOrigins.includes(origin)) {
+      console.log(`✅ Allowed CORS origin: ${origin}`);
       callback(null, true);
     } else {
-      console.error("❌ CORS not allowed for:", origin);
+      console.error(`❌ Blocked CORS origin: ${origin}`);
       callback(new Error("CORS not allowed"));
     }
   },
   credentials: true,
-};
+}));
 
-app.use(cors(corsOptions));
 
 // API Routes
 app.use("/pdrrmo-training/offices", officeRoutes);
@@ -81,14 +81,19 @@ app.post("/pdrrmo-training/echo", (req, res) => {
   res.json({ echo: message });
 });
 
-// Serve React Frontend
-app.use(express.static(path.join(__dirname, '../pdrrmo-training/build')));
+app.use(express.static(path.resolve(__dirname, '../pdrrmo-training/build')));
+
 app.get('/static/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../pdrrmo-training/build', req.path));
+  const filePath = path.resolve(__dirname, '../pdrrmo-training/build', req.path);
+  console.log("Serving static file:", filePath);
+  res.sendFile(filePath);
 });
-app.get('*', (_, res) => {
+
+app.get('*', (req, res) => {
+  console.log("Serving index.html for:", req.path);
   res.sendFile(path.resolve(__dirname, '../pdrrmo-training/build/index.html'));
 });
+
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
