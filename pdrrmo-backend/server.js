@@ -61,10 +61,10 @@ app.use(cors({
 }));
 
 // API Routes
-app.use("api/offices", officeRoutes);
-app.use("api/", authRoutes);
-app.use("api/users", authenticate, authorizeAdmin, userRoutes);
-app.use("api/training-titles", trainingTitleRoute);
+app.use("/pdrrmo-training/api/offices", officeRoutes);
+app.use("/pdrrmo-training/api/", authRoutes);
+app.use("/pdrrmo-training/api/users", authenticate, authorizeAdmin, userRoutes);
+app.use("/pdrrmo-training/api/training-titles", trainingTitleRoute);
 
 // Test Endpoints
 app.get("api/status", (req, res) => {

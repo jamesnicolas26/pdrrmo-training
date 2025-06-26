@@ -23,7 +23,7 @@ const AppWrapper = () => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Router>
+  <Router basename="/pdrrmo-training">
   <AuthProvider>
     <AppWrapper />
   </AuthProvider>

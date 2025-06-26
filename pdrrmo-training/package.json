@@ -1,7 +1,7 @@
 {
   "name": "pdrrmo-training",
   "version": "0.1.0",
-  "homepage": "https://pdrrmo-training.onrender.com",
+  "homepage": "/pdrrmo-training",
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
@@ -10,11 +10,10 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "cross-env": "^7.0.3",
-    "ls": "^0.2.1",
     "lucide-react": "^0.479.0",
     "pdrrmo-backend": "file:..",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-router-dom": "^7.2.0",
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4",
@@ -28,8 +27,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -46,6 +44,8 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-react-app": "^7.0.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.9"
   }
