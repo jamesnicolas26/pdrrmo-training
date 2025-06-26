@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../models/user");
 
 // Middleware to authenticate and verify token
 const authenticate = (req, res, next) => {
@@ -34,11 +34,9 @@ const authorizeRoles = (...roles) => {
         return res.status(404).json({ message: "User not found." });
       }
 
-// ...existing code...
-      if (!roles.includes(user.role)) {
+      if (!roles.includes(user.role.toLowerCase())) {
         return res.status(403).json({ message: "Access denied." });
       }
-// ...existing code...
 
       next();
     } catch (error) {
