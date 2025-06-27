@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node pdrrmo-backend/server.js",
     "dev": "nodemon pdrrmo-backend/server.js",
-    "build": "npm install && npm install --prefix pdrrmo-training && npm run build --prefix pdrrmo-training"
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
