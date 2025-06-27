@@ -24,13 +24,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+  try {
+    // Optionally call the server to invalidate the token
+    const token = localStorage.getItem("token");
+    if (token) {
+      await fetch(`${API_BASE_URL}/logout`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Error during logout:", error);
+  } finally {
     console.log("Logging out...");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
-    console.log("After logout:", localStorage.getItem("token"), localStorage.getItem("user"));
-  };
+
+    // Redirect to signin page immediately
+    window.location.href = "/pdrrmo-training/signin";
+  }
+};
+
 
   const isTokenValid = (token) => {
     if (!token) return false;

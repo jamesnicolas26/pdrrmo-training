@@ -1,7 +1,7 @@
 /node_modules
 /pdrrmo-training/node_modules
 /pdrrmo-training/build
-/pdrrmo-backend/.env
-/pdrrmo-backend/node_modules
-/pdrrmo-backend/package-lock.json
-/pdrrmo-backend/package.json
+/.env
+/node_modules
+/package-lock.json
+/package.json

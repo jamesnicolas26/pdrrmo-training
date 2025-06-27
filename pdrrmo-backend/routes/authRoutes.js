@@ -7,6 +7,11 @@ const router = express.Router();
 
 router.post("/login", loginUser);
 router.post("/register", registerUser);
+router.post("/logout", (req, res) => {
+  // Future improvement: Add token to a blacklist or store invalidated tokens.
+  res.json({ message: "Logged out successfully." });
+});
+
 
 router.post("/refresh-token", async (req, res) => {
   const oldToken = req.headers.authorization?.split(" ")[1];
@@ -34,7 +39,7 @@ router.post("/refresh-token", async (req, res) => {
         office: user.office,
       },
       process.env.SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "15m" }
     );
 
     res.json({

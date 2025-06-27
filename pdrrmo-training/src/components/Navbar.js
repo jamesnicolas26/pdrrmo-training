@@ -1,12 +1,12 @@
-// src/components/Navbar.js
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../Auth/AuthContext";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 const Navbar = () => {
   const [userRole, setUserRole] = useState(null);
+  const { logout } = useAuth(); // Use the logout function
   const location = useLocation();
 
   // Fetch user role on component load
@@ -19,7 +19,7 @@ const Navbar = () => {
           },
         });
         const data = await response.json();
-        setUserRole(data.role);  // Store the user role
+        setUserRole(data.role); // Store the user role
       } catch (error) {
         console.error("Error fetching user role:", error.message);
       }
@@ -29,14 +29,13 @@ const Navbar = () => {
   }, []);
 
   // Hide navbar on specific pages
-const hideNavbar =
-  location.pathname.startsWith("/edituser/") ||
-  location.pathname === "/signup" ||
-  location.pathname === "/signin";
-if (hideNavbar) {
-  return null;
-}
-
+  const hideNavbar =
+    location.pathname.startsWith("/edituser/") ||
+    location.pathname === "/signup" ||
+    location.pathname === "/signin";
+  if (hideNavbar) {
+    return null;
+  }
 
   return (
     <nav
@@ -60,14 +59,43 @@ if (hideNavbar) {
           padding: 0,
         }}
       >
-        <li><Link to="/" style={{ color: "#fff", textDecoration: "none" }}>Home</Link></li>
-        <li><Link to="/trainings" style={{ color: "#fff", textDecoration: "none" }}>Trainings</Link></li>
-        <li><Link to="/users" style={{ color: "#fff", textDecoration: "none" }}>Users</Link></li>
-        <li><Link to="/signout" style={{ color: "#fff", textDecoration: "none" }}>Logout</Link></li>
+        <li>
+          <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link to="/trainings" style={{ color: "#fff", textDecoration: "none" }}>
+            Trainings
+          </Link>
+        </li>
+        <li>
+          <Link to="/users" style={{ color: "#fff", textDecoration: "none" }}>
+            Users
+          </Link>
+        </li>
+        <li>
+          <button
+            onClick={logout}
+            style={{
+              background: "none",
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              textDecoration: "underline",
+            }}
+          >
+            Logout
+          </button>
+        </li>
 
         {/* Conditionally render Add Office link */}
         {userRole === "superadmin" && (
-          <li><Link to="/add-office" style={{ color: "#fff", textDecoration: "none" }}>Add Office</Link></li>
+          <li>
+            <Link to="/add-office" style={{ color: "#fff", textDecoration: "none" }}>
+              Add Office
+            </Link>
+          </li>
         )}
       </ul>
     </nav>
