@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
 
     // Redirect to signin page immediately
-    window.location.href = "/pdrrmo-training/signin";
+    window.location.href = "/signin";
   }
 };
 
