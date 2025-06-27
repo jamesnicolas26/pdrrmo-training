@@ -86,10 +86,10 @@ app.post("api/echo", (req, res) => {
   res.json({ echo: message });
 });
 
-app.use(express.static(path.join(__dirname,'../pdrrmo-training/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../pdrrmo-training/build/index.html'));
-});
+// app.use(express.static(path.join(__dirname,'../pdrrmo-training/build')));
+// app.get('*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, '../pdrrmo-training/build/index.html'));
+// });
 
 
 // Error Handling Middleware
