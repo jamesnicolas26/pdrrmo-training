@@ -64,7 +64,7 @@ app.use(cors({
 app.use("/api/offices", officeRoutes);
 app.use("/api/", authRoutes);
 app.use("/api/users", authenticate, authorizeAdmin, userRoutes);
-app.use("/pi/training-titles", trainingTitleRoute);
+app.use("/api/training-titles", trainingTitleRoute);
 
 // Test Endpoints
 app.get("/api/status", (req, res) => {
