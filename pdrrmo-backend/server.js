@@ -56,18 +56,18 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // }));
 
 app.use(cors({
-  origin: "*", // Allow all origins
+  origin: "https://pdrrmo-training-frontend.onrender.com", // Allow all origins
   credentials: true, // Allow cookies and authorization headers
 }));
 
 // API Routes
-app.use("/pdrrmo-training/api/offices", officeRoutes);
-app.use("/pdrrmo-training/api/", authRoutes);
-app.use("/pdrrmo-training/api/users", authenticate, authorizeAdmin, userRoutes);
-app.use("/pdrrmo-training/api/training-titles", trainingTitleRoute);
+app.use("/api/offices", officeRoutes);
+app.use("/api/", authRoutes);
+app.use("/api/users", authenticate, authorizeAdmin, userRoutes);
+app.use("/pi/training-titles", trainingTitleRoute);
 
 // Test Endpoints
-app.get("api/status", (req, res) => {
+app.get("/api/status", (req, res) => {
   console.log("✅ Status endpoint hit");
   res.json({
     status: "ok",
@@ -76,7 +76,7 @@ app.get("api/status", (req, res) => {
   });
 });
 
-app.post("api/echo", (req, res) => {
+app.post("/api/echo", (req, res) => {
   const { message } = req.body;
   console.log("✅ Echo endpoint hit with message:", message);
   if (!message) {
