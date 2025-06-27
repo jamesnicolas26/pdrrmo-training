@@ -54,6 +54,47 @@ const loginUser = async (req, res) => {
   }
 };
 
+const tokenBlacklist = new Set(); // Example with an in-memory store (use Redis for production)
+
+// Logout Logic
+const logoutUser = (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(400).json({ message: "Token required for logout." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597");
+
+    // Add token to blacklist
+    tokenBlacklist.add(token);
+
+    res.json({ message: "User logged out successfully." });
+  } catch (error) {
+    console.error("Error during logout:", error.message);
+    res.status(403).json({ message: "Invalid token." });
+  }
+};
+
+// Middleware to check token blacklist
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (tokenBlacklist.has(token)) {
+    return res.status(403).json({ message: "Token has been invalidated." });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY || "your-secret-key");
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.error("Token verification failed:", error.message);
+    res.status(401).json({ message: "Unauthorized." });
+  }
+};
+
 // Register Logic
 const registerUser = async (req, res) => {
   const { title, lastname, firstname, middlename, office, username, role, password } = req.body;
@@ -127,4 +168,4 @@ const refreshToken = async (req, res) => {
 };
 
 
-module.exports = { loginUser, registerUser, refreshToken };
+module.exports = { loginUser, logoutUser, registerUser, refreshToken };
