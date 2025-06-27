@@ -56,7 +56,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // }));
 
 app.use(cors({
-  origin: "https://pdrrmo-training-frontend.onrender.com", // Allow all origins
+  origin: "*", // Allow all origins
   credentials: true, // Allow cookies and authorization headers
 }));
 
