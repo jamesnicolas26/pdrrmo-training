@@ -33,6 +33,11 @@ const loginUser = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials." });
 
+    // ✅ Reject login if not approved (unless Admin or superadmin)
+    if (!user.isApproved && user.role !== "Admin" && user.role !== "superadmin") {
+      return res.status(403).json({ message: "Your account is not approved by an admin yet." });
+    }
+
     const token = generateToken(
       user._id,
       user.role,
@@ -102,18 +107,28 @@ const refreshToken = async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(oldToken, process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597");
+    const decoded = jwt.verify(
+      oldToken,
+      process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597"
+    );
 
-    // Fetch user details from the database
+    // ✅ Fetch user from DB using decoded id
     const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Generate a new token with user details
-    const newToken = generateToken(
-      user._id,
-      user.role
+    // ✅ Create new token with full user data
+    const newToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        office: user.office
+      },
+      process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597",
+      { expiresIn: "1h" }
     );
 
     res.json({
@@ -121,7 +136,8 @@ const refreshToken = async (req, res) => {
       firstname: user.firstname,
       lastname: user.lastname,
       office: user.office,
-      token: newToken,
+      role: user.role,
+      token: newToken
     });
   } catch (error) {
     console.error("Error refreshing token:", error.message);
