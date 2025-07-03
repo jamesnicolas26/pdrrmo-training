@@ -60,16 +60,24 @@ const clearAndRegenerateToken = async () => {
     // Optional: skip update if user has been removed since fetch started
     if (!localStorage.getItem("user")) return;
 
-    setUser((prevUser) => {
-      const updatedUser = {
-        ...prevUser,
-        token: data.token,
-        role: data.role || prevUser?.role,
-      };
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      return updatedUser;
-    });
+    setUser({
+  id: data.id,
+  firstname: data.firstname,
+  lastname: data.lastname,
+  office: data.office,
+  role: data.role,
+  token: data.token,
+});
+
+  localStorage.setItem("user", JSON.stringify({
+    id: data.id,
+    firstname: data.firstname,
+    lastname: data.lastname,
+    office: data.office,
+    role: data.role,
+    token: data.token,
+  }));
+  localStorage.setItem("token", data.token);
   } catch (error) {
     console.error("Error refreshing token:", error);
   }
