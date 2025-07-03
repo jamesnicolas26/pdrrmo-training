@@ -1,0 +1,19 @@
+Files changed during email implementation
+
+//Frontend
+
+Login
+
+Register
+
+EditUser
+
+Users
+
+//Backend
+
+user
+
+userController
+
+authController

@@ -1,0 +1,15 @@
+changes for both frontend and backend
+
+backend/app.js
+
+const trainingRoutes = require("./routes/trainingRoutes")
+
+app.use("/api/trainings", trainingRoutes);
+
+frontend/App.js
+
+import EditTraining from "./components/EditTraining";
+
+<Route path="/edittraining/:id" element={<EditTraining />} />
+
+edited AuthContext for logout function
