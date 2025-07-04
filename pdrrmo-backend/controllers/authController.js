@@ -16,6 +16,10 @@ const generateToken = (userId, role, firstname, lastname, office) => {
 const loginUser = async (req, res) => {
   const { identifier, password } = req.body;
 
+  console.log("🟨 Login attempt");
+  console.log("Identifier received:", identifier);
+  console.log("Password received:", password);
+
   if (!identifier || !password) {
     return res.status(400).json({ message: "Username/email and password are required." });
   }
@@ -25,9 +29,12 @@ const loginUser = async (req, res) => {
       $or: [{ username: identifier }, { email: identifier }],
     });
 
+    console.log("🟩 User found:", user); // <== Check this
+
     if (!user) return res.status(404).json({ message: "User not found." });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log("🟪 Password valid:", isPasswordValid);
     if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials." });
 
     // Only allow login if approved OR admin/superadmin
