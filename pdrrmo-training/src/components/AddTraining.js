@@ -140,8 +140,8 @@ const AddTraining = ({ addTraining }) => {
     if (user?.role === "Member") {
       setFormData((prev) => ({
         ...prev,
-        author: `${user.lastname}, ${user.firstname}`,
-        office: user.office,
+        author: prev.author || `${user.lastname}, ${user.firstname}`,
+        office: prev.office || user.office,
       }));
     }
   }, [user]);
