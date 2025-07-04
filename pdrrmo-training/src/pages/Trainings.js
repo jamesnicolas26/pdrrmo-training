@@ -184,11 +184,12 @@ const handleYearChange = (e) => {
         border: "none",
         borderRadius: "2px",
         cursor: "pointer",
-        fontWeight: "bold",
-        fontSize: "0.75rem", // smaller font
-        padding: "0.2em 0.4em", // relative to font size
-        display: "inline-block",
+        fontWeight: "normal",
+        fontSize: "10px",          // very small font
+        padding: "1px 4px",        // minimal padding
         lineHeight: "1",
+        display: "inline-block",
+        whiteSpace: "nowrap",      // prevent line break
       }}
     >
       Add Training
@@ -202,11 +203,12 @@ const handleYearChange = (e) => {
         border: "none",
         borderRadius: "2px",
         cursor: "pointer",
-        fontWeight: "bold",
-        fontSize: "0.75rem", // smaller font
-        padding: "0.2em 0.4em", // relative to font size
-        display: "inline-block",
+        fontWeight: "normal",
+        fontSize: "10px",          // very small font
+        padding: "1px 4px",        // minimal padding
         lineHeight: "1",
+        display: "inline-block",
+        whiteSpace: "nowrap",
       }}
     >
       Export
@@ -220,11 +222,12 @@ const handleYearChange = (e) => {
         border: "none",
         borderRadius: "2px",
         cursor: "pointer",
-        fontWeight: "bold",
-        fontSize: "0.75rem", // smaller font
-        padding: "0.2em 0.4em", // relative to font size
-        display: "inline-block",
+        fontWeight: "normal",
+        fontSize: "10px",          // very small font
+        padding: "1px 4px",        // minimal padding
         lineHeight: "1",
+        display: "inline-block",
+        whiteSpace: "nowrap",
       }}
     >
      Show Media Library
