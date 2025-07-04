@@ -88,35 +88,43 @@ const handleYearChange = (e) => {
   };
 
   const exportToExcel = () => {
-    const data = filteredTrainings.map((training) => ({
-      Name: training.author,
-      Office: training.office || "",
-      "Title of Training Attended": training.title,
-      "Start Date": training.startDate,
-      "End Date": training.endDate,
-      "Number of Hours": training.hours,
-      "Type of Training": training.type,
-      "Sponsored/Conducted By": training.sponsor,
-      Certificate: training.certificate ? "Yes" : "No",
-    }));
-
-
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const columnWidths = Object.keys(data[0] || {}).map((key) => ({
-      wch: Math.max(
-        key.length,
-        ...data.map((row) => (row[key] ? row[key].toString().length : 0))
-      ) + 2,
-    }));
-
-    worksheet["!cols"] = columnWidths;
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Trainings");
-
-    const timestamp = new Date().toISOString().replace(/[-:T]/g, "_").split(".")[0];
-    XLSX.writeFile(workbook, `trainings_${timestamp}.xlsx`);
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const month = `${date.getMonth() + 1}`.padStart(2, "0");
+    const day = `${date.getDate()}`.padStart(2, "0");
+    const year = date.getFullYear();
+    return `${month}-${day}-${year}`;
   };
+
+  const data = filteredTrainings.map((training) => ({
+    Name: training.author,
+    Office: training.office || "",
+    "Title of Training Attended": training.title,
+    "Start Date": formatDate(training.startDate),
+    "End Date": formatDate(training.endDate),
+    "Number of Hours": training.hours,
+    "Type of Training": training.type,
+    "Sponsored/Conducted By": training.sponsor,
+    Certificate: training.certificate ? "Yes" : "No",
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const columnWidths = Object.keys(data[0] || {}).map((key) => ({
+    wch: Math.max(
+      key.length,
+      ...data.map((row) => (row[key] ? row[key].toString().length : 0))
+    ) + 2,
+  }));
+
+  worksheet["!cols"] = columnWidths;
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Trainings");
+
+  const timestamp = new Date().toISOString().replace(/[-:T]/g, "_").split(".")[0];
+  XLSX.writeFile(workbook, `trainings_${timestamp}.xlsx`);
+};
 
   const handleSort = (key) => {
     let direction = "asc";
@@ -282,7 +290,7 @@ const handleYearChange = (e) => {
               Start Date {getSortIcon("startDate")}</th>
               <th style={thTdStyle} onClick={() => handleSort("endDate")}>
               End Date {getSortIcon("endDate")}</th>
-              <th style={thTdStyle} onClick={() => handleSort("hours")}>
+              <th style={thTdStyle} textAlign="center" onClick={() => handleSort("hours")}>
               Number of Hours {getSortIcon("hours")}</th>
               <th style={thTdStyle} onClick={() => handleSort("type")}>
               Type of Training {getSortIcon("type")}</th>
