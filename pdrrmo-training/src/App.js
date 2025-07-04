@@ -107,7 +107,6 @@ export default function App() {
               <Trainings
                 trainings={trainings}
                 deleteTraining={deleteTraining}
-                userRole={user?.role}
               />
             </PrivateRoute>
           }
