@@ -294,7 +294,7 @@ const handleYearChange = (e) => {
                   (e.currentTarget.style.backgroundColor = "transparent")
                 }
               >
-                <td style={thTdStyle}>{`${user.lastname}, ${user.firstname}`}</td>
+                <td style={thTdStyle}>{training.author}</td>
                 <td style={thTdStyle}>{training.office || ""}</td>
                 <td style={thTdStyle}>{training.title}</td>
                 <td style={thTdStyle}>{formatDate(training.startDate)}</td>
