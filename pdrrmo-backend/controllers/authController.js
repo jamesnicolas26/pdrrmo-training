@@ -75,16 +75,9 @@ const registerUser = async (req, res) => {
     const isApproved = role === "Admin"; // Automatically approve admin users
 
     const newUser = new User({
-      title,
-      lastname,
-      firstname,
-      middlename,
-      office,
-      username,
-      email,
-      role,
-      password: hashedPassword,
-      isApproved,
+      ...req.body,               // ✅ Spread first (may include raw password)
+      password: hashedPassword, // ✅ Then overwrite password
+      isApproved,               // ✅ Safe to add after
     });
 
     await newUser.save();
