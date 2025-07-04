@@ -1,50 +1,29 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-// Middleware to authenticate and verify token
 const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Access denied. No token provided." });
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No token provided." });
   }
 
   const token = authHeader.split(" ")[1];
-
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.user = decoded; // Attach decoded data to the request
+    req.user = decoded;
     next();
-  } catch (error) {
-    console.error("JWT Error:", error.message);
-    res.status(403).json({ message: "Authentication failed. Invalid or expired token." });
+  } catch (err) {
+    console.error("JWT error:", err.message);
+    res.status(403).json({ message: "Invalid or expired token." });
   }
 };
 
-// Middleware to authorize specific roles
 const authorizeRoles = (...roles) => {
-  return async (req, res, next) => {
-    try {
-      if (!req.user || !req.user.id) {
-        return res.status(401).json({ message: "Unauthorized access. User not authenticated." });
-      }
-
-      const user = await User.findById(req.user.id);
-      if (!user) {
-        return res.status(404).json({ message: "User not found." });
-      }
-
-// ...existing code...
-      if (!roles.includes(user.role.toLowerCase())) {
-        return res.status(403).json({ message: "Access denied." });
-      }
-// ...existing code...
-
-      next();
-    } catch (error) {
-      console.error("Authorization error:", error.message);
-      res.status(500).json({ message: "Error verifying user role." });
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Access denied." });
     }
+    next();
   };
 };
 
@@ -68,6 +47,6 @@ const protect = async (req, res, next) => {
   }
 };
 
-const authorizeAdmin = authorizeRoles("Admin", "superadmin");
+const authorizeAdmin = authorizeRoles("admin", "superadmin");
 
 module.exports = { authenticate, authorizeRoles, authorizeAdmin, protect };

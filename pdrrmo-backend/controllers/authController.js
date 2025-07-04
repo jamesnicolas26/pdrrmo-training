@@ -6,15 +6,11 @@ const sendEmail = require("../utils/sendEmail");
 
 // Helper function to generate a token
 const generateToken = (userId, role, firstname, lastname, office) => {
-  const secretKey = process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597";
-  const token = jwt.sign(
-    { id: userId, role, firstname, lastname, office },
-    secretKey,
-    { expiresIn: "1h" }
-  );
-  return token;
+  const secretKey = process.env.SECRET_KEY;
+  return jwt.sign({ id: userId, role, firstname, lastname, office }, secretKey, {
+    expiresIn: "1h",
+  });
 };
-
 
 // Login Logic
 const loginUser = async (req, res) => {
@@ -26,38 +22,33 @@ const loginUser = async (req, res) => {
 
   try {
     const user = await User.findOne({
-      $or: [{ username: identifier }, { email: identifier }]
+      $or: [{ username: identifier }, { email: identifier }],
     });
+
     if (!user) return res.status(404).json({ message: "User not found." });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials." });
 
-    // ✅ Reject login if not approved (unless Admin or superadmin)
+    // Only allow login if approved OR admin/superadmin
     if (!user.isApproved && user.role !== "Admin" && user.role !== "superadmin") {
       return res.status(403).json({ message: "Your account is not approved by an admin yet." });
     }
 
-    const token = generateToken(
-      user._id,
-      user.role,
-      user.firstname,
-      user.lastname,
-      user.office
-    );
+    const token = generateToken(user._id, user.role, user.firstname, user.lastname, user.office);
 
     res.json({
       id: user._id,
       firstname: user.firstname,
       lastname: user.lastname,
       office: user.office,
-      token,
+      role: user.role,
       isApproved: user.isApproved,
-      role: user.role
+      token,
     });
   } catch (error) {
-    console.error("Error logging in:", error);
-    res.status(500).json({ message: "Error logging in." });
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -100,36 +91,15 @@ const registerUser = async (req, res) => {
 
 // Refresh Token Logic
 const refreshToken = async (req, res) => {
-  const oldToken = req.headers.authorization?.split(" ")[1];
-
-  if (!oldToken) {
-    return res.status(400).json({ message: "Token required." });
-  }
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(400).json({ message: "Token required." });
 
   try {
-    const decoded = jwt.verify(
-      oldToken,
-      process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597"
-    );
-
-    // ✅ Fetch user from DB using decoded id
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
     const user = await User.findById(decoded.id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
+    if (!user) return res.status(404).json({ message: "User not found." });
 
-    // ✅ Create new token with full user data
-    const newToken = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        office: user.office
-      },
-      process.env.SECRET_KEY || "aad96d99fd8ed30865caec96d6c1adfda41949948da88af3b448ce232ce36597",
-      { expiresIn: "1h" }
-    );
+    const newToken = generateToken(user._id, user.role, user.firstname, user.lastname, user.office);
 
     res.json({
       id: user._id,
@@ -137,10 +107,10 @@ const refreshToken = async (req, res) => {
       lastname: user.lastname,
       office: user.office,
       role: user.role,
-      token: newToken
+      token: newToken,
     });
-  } catch (error) {
-    console.error("Error refreshing token:", error.message);
+  } catch (err) {
+    console.error("Refresh error:", err);
     res.status(403).json({ message: "Invalid or expired token." });
   }
 };

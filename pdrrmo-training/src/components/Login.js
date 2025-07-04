@@ -44,8 +44,8 @@ const Login = () => {
       console.log("Data:", data);
   
       if (response.ok) {
-        if (data.role === "Admin" || data.isApproved) {
-          login(data); // Update AuthContext
+        if (data.role === "Admin" || data.role === "superadmin" || data.isApproved) {
+          login(data); // store token + user
           navigate("/");
         } else {
           setError("Your account is not approved by an admin yet.");
