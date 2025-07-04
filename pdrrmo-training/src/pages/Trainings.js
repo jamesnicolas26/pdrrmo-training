@@ -169,49 +169,56 @@ const handleYearChange = (e) => {
         <h1>Trainings</h1>
     <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px", marginBottom: "20px" }}>
     <button
-    onClick={() => navigate("/addtraining")}
-    style={{
-      padding: "2px 4px",
-      backgroundColor: "#4CAF50",
-      color: "#fff",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontSize: "10px",
-    }}
-  >
-    Add Training
-  </button>
+      onClick={() => navigate("/addtraining")}
+      style={{
+        backgroundColor: "#4CAF50",
+        color: "#fff",
+        border: "none",
+        borderRadius: "2px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        fontSize: "12px",
+        padding: "2px 4px",
+        display: "inline-block",
+      }}
+    >
+      Add Training
+    </button>
 
-  <button
-    onClick={exportToExcel}
-    style={{
-      padding: "2px 4px",
-      backgroundColor: "#4CAF50",
-      color: "#fff",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontSize: "10px",
-    }}
-  >
-    Export to Excel
-  </button>
+    <button
+      onClick={exportToExcel}
+      style={{
+        backgroundColor: "#4CAF50",
+        color: "#fff",
+        border: "none",
+        borderRadius: "2px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        fontSize: "12px",
+        padding: "2px 4px",
+        display: "inline-block",
+      }}
+    >
+      Export
+    </button>
 
-  <button
-    onClick={() => setShowMediaLibrary(true)}
-    style={{
-      padding: "2px 4px",
-      backgroundColor: "#4CAF50",
-      color: "#fff",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontSize: "10px",
-    }}
-  >
-    Open Media Library
-  </button>
+    <button
+      onClick={() => setShowMediaLibrary(true)}
+      style={{
+        backgroundColor: "#4CAF50",
+        color: "#fff",
+        border: "none",
+        borderRadius: "2px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        fontSize: "12px",
+        padding: "2px 4px",
+        display: "inline-block",
+      }}
+    >
+     Show Media Library
+    </button>
+
     </div>
       </div>
       <div style={{ marginBottom: "20px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
