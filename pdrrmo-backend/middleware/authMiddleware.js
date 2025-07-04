@@ -47,6 +47,6 @@ const protect = async (req, res, next) => {
   }
 };
 
-const authorizeAdmin = authorizeRoles("admin", "superadmin");
+const authorizeAdmin = authorizeRoles("Admin", "superadmin");
 
 module.exports = { authenticate, authorizeRoles, authorizeAdmin, protect };
