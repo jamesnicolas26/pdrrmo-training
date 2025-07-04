@@ -41,17 +41,6 @@ export default function App() {
   });
 
   useEffect(() => {
-    const refreshToken = async () => {
-      try {
-        await clearAndRegenerateToken();
-      } catch (error) {
-        console.error("Error refreshing token:", error);
-      }
-    };
-    refreshToken();
-  }, [clearAndRegenerateToken]);
-
-  useEffect(() => {
     try {
       localStorage.setItem("users", JSON.stringify(users));
     } catch (error) {
