@@ -89,7 +89,7 @@ const handleYearChange = (e) => {
 
   const exportToExcel = () => {
     const data = filteredTrainings.map((training) => ({
-      Name: `${user.lastname}, ${user.firstname}`,
+      Name: `${training.author.lastname}, ${training.author.firstname}`,
       Office: training.office || "",
       "Title of Training Attended": training.title,
       "Start Date": training.startDate,
