@@ -175,8 +175,9 @@ const handleYearChange = (e) => {
       backgroundColor: "#4CAF50",
       color: "#fff",
       border: "none",
-      borderRadius: "2px",
+      borderRadius: "5px",
       cursor: "pointer",
+      fontSize: "10px",
     }}
   >
     Add Training
@@ -189,8 +190,9 @@ const handleYearChange = (e) => {
       backgroundColor: "#4CAF50",
       color: "#fff",
       border: "none",
-      borderRadius: "2px",
+      borderRadius: "5px",
       cursor: "pointer",
+      fontSize: "10px",
     }}
   >
     Export to Excel
@@ -203,8 +205,9 @@ const handleYearChange = (e) => {
       backgroundColor: "#4CAF50",
       color: "#fff",
       border: "none",
-      borderRadius: "2px",
+      borderRadius: "5px",
       cursor: "pointer",
+      fontSize: "10px",
     }}
   >
     Open Media Library
