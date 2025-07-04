@@ -177,7 +177,6 @@ const handleYearChange = (e) => {
       border: "none",
       borderRadius: "2px",
       cursor: "pointer",
-      fontWeight: "bold",
     }}
   >
     Add Training
@@ -192,7 +191,6 @@ const handleYearChange = (e) => {
       border: "none",
       borderRadius: "2px",
       cursor: "pointer",
-      fontWeight: "bold",
     }}
   >
     Export to Excel
@@ -207,7 +205,6 @@ const handleYearChange = (e) => {
       border: "none",
       borderRadius: "2px",
       cursor: "pointer",
-      fontWeight: "bold",
     }}
   >
     Open Media Library
