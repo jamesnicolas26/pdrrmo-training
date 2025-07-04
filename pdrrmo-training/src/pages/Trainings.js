@@ -89,7 +89,7 @@ const handleYearChange = (e) => {
 
   const exportToExcel = () => {
     const data = filteredTrainings.map((training) => ({
-      Name: training.author,
+      Name: `${user.lastname}, ${user.firstname}`,
       Office: training.office || "",
       "Title of Training Attended": training.title,
       "Start Date": training.startDate,
@@ -171,11 +171,11 @@ const handleYearChange = (e) => {
     <button
     onClick={() => navigate("/addtraining")}
     style={{
-      padding: "5px 10px",
+      padding: "2px 4px",
       backgroundColor: "#4CAF50",
       color: "#fff",
       border: "none",
-      borderRadius: "5px",
+      borderRadius: "2px",
       cursor: "pointer",
       fontWeight: "bold",
     }}
@@ -186,11 +186,11 @@ const handleYearChange = (e) => {
   <button
     onClick={exportToExcel}
     style={{
-      padding: "5px 10px",
+      padding: "2px 4px",
       backgroundColor: "#4CAF50",
       color: "#fff",
       border: "none",
-      borderRadius: "5px",
+      borderRadius: "2px",
       cursor: "pointer",
       fontWeight: "bold",
     }}
@@ -201,11 +201,11 @@ const handleYearChange = (e) => {
   <button
     onClick={() => setShowMediaLibrary(true)}
     style={{
-      padding: "5px 10px",
+      padding: "2px 4px",
       backgroundColor: "#4CAF50",
       color: "#fff",
       border: "none",
-      borderRadius: "5px",
+      borderRadius: "2px",
       cursor: "pointer",
       fontWeight: "bold",
     }}
@@ -294,7 +294,7 @@ const handleYearChange = (e) => {
                   (e.currentTarget.style.backgroundColor = "transparent")
                 }
               >
-                <td style={thTdStyle}>{training.author}</td>
+                <td style={thTdStyle}>{`${user.lastname}, ${user.firstname}`}</td>
                 <td style={thTdStyle}>{training.office || ""}</td>
                 <td style={thTdStyle}>{training.title}</td>
                 <td style={thTdStyle}>{formatDate(training.startDate)}</td>
