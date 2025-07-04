@@ -71,7 +71,7 @@ const registerUser = async (req, res) => {
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) return res.status(409).json({ message: "Username or email already exists." });
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const isApproved = role === "Admin"; // Automatically approve admin users
 
     const newUser = new User({
