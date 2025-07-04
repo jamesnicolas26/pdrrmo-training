@@ -16,10 +16,6 @@ const generateToken = (userId, role, firstname, lastname, office) => {
 const loginUser = async (req, res) => {
   const { identifier, password } = req.body;
 
-  console.log("🟨 Login attempt");
-  console.log("Identifier received:", identifier);
-  console.log("Password received:", password);
-
   if (!identifier || !password) {
     return res.status(400).json({ message: "Username/email and password are required." });
   }
@@ -28,8 +24,6 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({
       $or: [{ username: identifier }, { email: identifier }],
     });
-
-    console.log("🟩 User found:", user); // <== Check this
 
     if (!user) return res.status(404).json({ message: "User not found." });
 

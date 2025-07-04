@@ -19,7 +19,6 @@ import ResetPassword from "./components/ResetPassword";
 
 
 export default function App() {
-  const { clearAndRegenerateToken, currentUser } = useAuth();
 
   const [users, setUsers] = useState(() => {
     try {
@@ -102,7 +101,6 @@ export default function App() {
   };
 
   return (
-    <AuthProvider>
       <Routes>
         <Route path="/signin" element={<Login />} />
         <Route
@@ -163,6 +161,5 @@ export default function App() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
-    </AuthProvider>
   );
 }

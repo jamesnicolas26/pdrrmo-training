@@ -8,6 +8,8 @@ app.use("/api/trainings", trainingRoutes);
 
 frontend/App.js
 
+index.js
+
 import EditTraining from "./components/EditTraining";
 
 <Route path="/edittraining/:id" element={<EditTraining />} />

@@ -23,10 +23,12 @@ const AppWrapper = () => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Router basename = "">
+  <React.StrictMode>
   <AuthProvider>
+  <Router basename = "">
     <AppWrapper />
-  </AuthProvider>
   </Router>
+  </AuthProvider>
+  </React.StrictMode>
 );
 
