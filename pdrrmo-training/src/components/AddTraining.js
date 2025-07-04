@@ -151,16 +151,17 @@ const AddTraining = ({ addTraining }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "author") {
-      const selectedAuthor = authors.find(
-        (author) => `${user.lastname}, ${user.firstname}` === value
-      );
-      setFormData((prev) => ({
-        ...prev,
-        author: value,
-        office: selectedAuthor ? selectedAuthor.office : "",
-      }));
-    } else {
+      if (name === "author") {
+        const selectedAuthor = authors.find(
+          (author) => `${author.lastname}, ${author.firstname}` === value
+        );
+        setFormData((prev) => ({
+          ...prev,
+          author: value,
+          office: selectedAuthor ? selectedAuthor.office : "",
+        }));
+      }
+      else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
@@ -405,9 +406,9 @@ const AddTraining = ({ addTraining }) => {
               <select required name="author" value={formData.author} onChange={handleChange} style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}>
                 <option value="" disabled>Select Author</option>
                 {authors.map((author) => (
-                  <option key={author._id} value={`${user.lastname}, ${user.firstname}`}>
-                    {author.lastname}, {author.firstname}
-                  </option>
+                <option key={author._id} value={`${author.lastname}, ${author.firstname}`}>
+                {author.lastname}, {author.firstname}
+                </option>
                 ))}
               </select>
             )}
