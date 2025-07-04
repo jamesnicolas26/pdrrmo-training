@@ -11,8 +11,8 @@ const RoleProtectedRoute = ({ children, requiredRole }) => {
   }
 
   const hasAccess = Array.isArray(requiredRole)
-    ? requiredRole.includes(user.role)
-    : user.role === requiredRole;
+    ? requiredRole.map((r) => r.toLowerCase()).includes(user.role?.toLowerCase())
+    : user.role?.toLowerCase() === requiredRole.toLowerCase();
 
   if (!hasAccess) {
     alert("Access denied. You do not have the required permissions.");

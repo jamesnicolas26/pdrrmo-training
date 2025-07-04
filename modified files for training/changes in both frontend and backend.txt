@@ -15,3 +15,5 @@ import EditTraining from "./components/EditTraining";
 <Route path="/edittraining/:id" element={<EditTraining />} />
 
 edited AuthContext for logout function
+
+RoleProtectedRoute
