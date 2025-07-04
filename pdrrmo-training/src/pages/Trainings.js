@@ -188,21 +188,21 @@ const handleYearChange = (e) => {
 
   return (
     <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-        <h1>Trainings</h1>
-    <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px", marginBottom: "20px" }}>
-      
-    <button onClick={() => navigate("/addtraining")} style={cleanButtonStyle}>
-      Add Training
-    </button>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+     <h1 style={{ margin: 0 }}>Trainings</h1>
 
-    <button onClick={exportToExcel} style={cleanButtonStyle}>
-      Export
-    </button>
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <button onClick={() => navigate("/addtraining")} style={cleanButtonStyle}>
+        Add Training
+      </button>
 
-    <button onClick={() => setShowMediaLibrary(true)} style={cleanButtonStyle}>
-      Show Media Library
-    </button>
+      <button onClick={exportToExcel} style={cleanButtonStyle}>
+        Export
+      </button>
+
+      <button onClick={() => setShowMediaLibrary(true)} style={cleanButtonStyle}>
+        Show Media Library
+      </button>
 
     </div>
       </div>
