@@ -290,7 +290,7 @@ const handleYearChange = (e) => {
               Start Date {getSortIcon("startDate")}</th>
               <th style={thTdStyle} onClick={() => handleSort("endDate")}>
               End Date {getSortIcon("endDate")}</th>
-              <th style={thTdStyle} textAlign="center" onClick={() => handleSort("hours")}>
+              <th style={thTdStyle} onClick={() => handleSort("hours")}>
               Number of Hours {getSortIcon("hours")}</th>
               <th style={thTdStyle} onClick={() => handleSort("type")}>
               Type of Training {getSortIcon("type")}</th>
@@ -317,7 +317,7 @@ const handleYearChange = (e) => {
                 <td style={thTdStyle}>{training.title}</td>
                 <td style={thTdStyle}>{formatDate(training.startDate)}</td>
                 <td style={thTdStyle}>{formatDate(training.endDate)}</td>
-                <td style={thTdStyle}>{training.hours}</td>
+                <td style={{thTdStyle, textAlign: "center" }}>{training.hours}</td>
                 <td style={thTdStyle}>{training.type}</td>
                 <td style={thTdStyle}>{training.sponsor}</td>
                 <td style={thTdStyle}>
