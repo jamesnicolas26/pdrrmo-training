@@ -18,19 +18,19 @@ const Trainings = () => {
   marginBottom: "20px",
 };
 
-const compactButtonStyle = {
+const cleanButtonStyle = {
   backgroundColor: "#4CAF50",
   color: "#fff",
   border: "none",
-  borderRadius: "4px",         // smoother shape
-  cursor: "pointer",
-  fontSize: "10px",            // small readable text
-  padding: "2px 6px",          // adjusted for better balance
-  lineHeight: "1",
-  whiteSpace: "nowrap",
-  display: "inline-flex",      // ensures text aligns well
-  alignItems: "center",        // vertical centering
-  justifyContent: "center",
+  borderRadius: "4px",
+  fontSize: "10px",
+  padding: "2px 6px",
+  lineHeight: "1",           // tight line height
+  whiteSpace: "nowrap",      // prevent wrap
+  height: "auto",
+  width: "auto",
+  display: "inline-block",   // natural size
+  fontFamily: "inherit",     // consistent with rest of UI
 };
 
 const thTdStyle = {
@@ -191,15 +191,16 @@ const handleYearChange = (e) => {
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
         <h1>Trainings</h1>
     <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px", marginBottom: "20px" }}>
-    <button onClick={() => navigate("/addtraining")} style={compactButtonStyle}>
+      
+    <button onClick={() => navigate("/addtraining")} style={cleanButtonStyle}>
       Add Training
     </button>
 
-    <button onClick={exportToExcel} style={compactButtonStyle}>
+    <button onClick={exportToExcel} style={cleanButtonStyle}>
       Export
     </button>
 
-    <button onClick={() => setShowMediaLibrary(true)} style={compactButtonStyle}>
+    <button onClick={() => setShowMediaLibrary(true)} style={cleanButtonStyle}>
       Show Media Library
     </button>
 
