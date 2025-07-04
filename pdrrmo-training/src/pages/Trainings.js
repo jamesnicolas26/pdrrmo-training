@@ -177,9 +177,10 @@ const handleYearChange = (e) => {
         borderRadius: "2px",
         cursor: "pointer",
         fontWeight: "bold",
-        fontSize: "12px",
-        padding: "2px 4px",
+        fontSize: "0.75rem", // smaller font
+        padding: "0.2em 0.4em", // relative to font size
         display: "inline-block",
+        lineHeight: "1",
       }}
     >
       Add Training
@@ -194,9 +195,10 @@ const handleYearChange = (e) => {
         borderRadius: "2px",
         cursor: "pointer",
         fontWeight: "bold",
-        fontSize: "12px",
-        padding: "2px 4px",
+        fontSize: "0.75rem", // smaller font
+        padding: "0.2em 0.4em", // relative to font size
         display: "inline-block",
+        lineHeight: "1",
       }}
     >
       Export
@@ -211,9 +213,10 @@ const handleYearChange = (e) => {
         borderRadius: "2px",
         cursor: "pointer",
         fontWeight: "bold",
-        fontSize: "12px",
-        padding: "2px 4px",
+        fontSize: "0.75rem", // smaller font
+        padding: "0.2em 0.4em", // relative to font size
         display: "inline-block",
+        lineHeight: "1",
       }}
     >
      Show Media Library
@@ -239,7 +242,7 @@ const handleYearChange = (e) => {
           <option value="Managerial">Managerial</option>
           <option value="Technical">Technical</option>
         </select>
-        {userRole === "Admin" || userRole === "superadmin" && (
+        {(userRole === "Admin" || userRole === "superadmin") && (
           <>
             <input
               type="text"
