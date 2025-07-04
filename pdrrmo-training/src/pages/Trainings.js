@@ -18,6 +18,21 @@ const Trainings = () => {
   marginBottom: "20px",
 };
 
+const compactButtonStyle = {
+  backgroundColor: "#4CAF50",
+  color: "#fff",
+  border: "none",
+  borderRadius: "4px",         // smoother shape
+  cursor: "pointer",
+  fontSize: "10px",            // small readable text
+  padding: "2px 6px",          // adjusted for better balance
+  lineHeight: "1",
+  whiteSpace: "nowrap",
+  display: "inline-flex",      // ensures text aligns well
+  alignItems: "center",        // vertical centering
+  justifyContent: "center",
+};
+
 const thTdStyle = {
   border: "1px solid #ddd",
   padding: "8px",
@@ -176,64 +191,16 @@ const handleYearChange = (e) => {
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
         <h1>Trainings</h1>
     <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px", marginBottom: "20px" }}>
-    <button
-      onClick={() => navigate("/addtraining")}
-      style={{
-        backgroundColor: "#4CAF50",
-        color: "#fff",
-        border: "none",
-        borderRadius: "2px",
-        cursor: "pointer",
-        fontSize: "10px",            // small font
-        padding: "2px 4px",          // minimal padding
-        lineHeight: "1",
-        whiteSpace: "nowrap",        // prevent line breaks
-        display: "inline-block",
-        width: "auto",     // prevent line break
-        height: "auto",    // prevent line break
-      }}
-    >
+    <button onClick={() => navigate("/addtraining")} style={compactButtonStyle}>
       Add Training
     </button>
 
-    <button
-      onClick={exportToExcel}
-      style={{
-        backgroundColor: "#4CAF50",
-        color: "#fff",
-        border: "none",
-        borderRadius: "2px",
-        cursor: "pointer",
-        fontSize: "10px",            // small font
-        padding: "2px 4px",          // minimal padding
-        lineHeight: "1",
-        whiteSpace: "nowrap",        // prevent line breaks
-        display: "inline-block",
-        width: "auto",     // prevent line break
-        height: "auto",  
-      }}
-    >
+    <button onClick={exportToExcel} style={compactButtonStyle}>
       Export
     </button>
 
-    <button
-      onClick={() => setShowMediaLibrary(true)}
-      style={{
-        backgroundColor: "#4CAF50",
-        color: "#fff",
-        border: "none",
-        borderRadius: "2px",
-        cursor: "pointer",
-        fontSize: "10px",            // small font
-        padding: "2px 4px",          // minimal padding
-        lineHeight: "1",
-        whiteSpace: "nowrap",        // prevent line breaks
-        display: "inline-block",
-        width: "auto",     // prevent line break
-        height: "auto",  
-      }}
-    >
-     Show Media Library
+    <button onClick={() => setShowMediaLibrary(true)} style={compactButtonStyle}>
+      Show Media Library
     </button>
 
     </div>
