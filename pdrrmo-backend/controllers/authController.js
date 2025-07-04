@@ -68,18 +68,27 @@ const registerUser = async (req, res) => {
   }
 
   try {
+    // Check for existing user
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
-    if (existingUser) return res.status(409).json({ message: "Username or email already exists." });
+    if (existingUser) {
+      return res.status(409).json({ message: "Username or email already exists." });
+    }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const isApproved = role === "Admin"; // Automatically approve admin users
-
+    // Create new user (with plain password — NOT hashed here)
     const newUser = new User({
-      ...req.body,               // ✅ Spread first (may include raw password)
-      password: hashedPassword, // ✅ Then overwrite password
-      isApproved,               // ✅ Safe to add after
+      title,
+      lastname,
+      firstname,
+      middlename,
+      office,
+      username,
+      email,
+      role,
+      password, // plain password
+      isApproved: role === "Admin", // auto-approve admins
     });
 
+    // ✅ This will trigger pre-save hook that hashes password like in resetPassword
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully." });
