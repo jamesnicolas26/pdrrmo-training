@@ -22,15 +22,14 @@ const cleanButtonStyle = {
   backgroundColor: "#4CAF50",
   color: "#fff",
   border: "none",
-  borderRadius: "4px",
-  fontSize: "10px",
-  padding: "2px 6px",
-  lineHeight: "1",           // tight line height
-  whiteSpace: "nowrap",      // prevent wrap
-  height: "auto",
-  width: "auto",
-  display: "inline-block",   // natural size
-  fontFamily: "inherit",     // consistent with rest of UI
+  borderRadius: "5px",      // match Edit button
+  cursor: "pointer",
+  fontSize: "12px",         // slightly bigger
+  padding: "4px 10px",      // similar to Edit/Delete buttons
+  fontWeight: "bold",
+  lineHeight: "1",
+  whiteSpace: "nowrap",
+  display: "inline-block",
 };
 
 const thTdStyle = {
