@@ -25,9 +25,7 @@ const cleanButtonStyle = {
   borderRadius: "5px",      // match Edit button
   cursor: "pointer",
   fontSize: "12px",         // slightly bigger
-  padding: "4px 10px",      // similar to Edit/Delete buttons
-  fontWeight: "bold",
-  lineHeight: "1",
+  padding: "5px 10px",      // similar to Edit/Delete buttons
   whiteSpace: "nowrap",
   display: "inline-block",
 };
