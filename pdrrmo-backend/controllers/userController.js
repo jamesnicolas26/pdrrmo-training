@@ -56,21 +56,27 @@ const deleteUser = async (req, res) => {
 };
 
 // Get a user by ID (for editing purposes)
-// Update getUserById for better error handling
 const getUserById = async (req, res) => {
   try {
     const userId = req.params.id;
+    const requester = req.user;
+    const requesterId = requester.id || requester._id;
 
-    // Validate MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID format." });
     }
 
-    // Attempt to find the user
-    const user = await User.findById(userId, "-password");
+    // 🔒 Only allow members to access their own profile
+    if (
+      requester.role === "Member" &&
+      !new mongoose.Types.ObjectId(userId).equals(requesterId)
+    ) {
+      return res.status(403).json({ message: "Access denied." });
+    }
 
+    const user = await User.findById(userId, "-password");
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found." });
     }
 
     res.status(200).json(user);
@@ -80,19 +86,40 @@ const getUserById = async (req, res) => {
   }
 };
 
-
 // Update a user by ID
 const updateUserById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, lastname, firstname, middlename, office, username, email, role } = req.body;
+    const userId = req.params.id;
+    const requester = req.user;
+    const requesterId = requester.id || requester._id;
 
-    // Find and update the user
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      { title, lastname, firstname, middlename, office, username, email, role },
-      { new: true, runValidators: true } // Return the updated document and validate data
-    );
+    // 🔒 Only allow members to update their own profile
+    if (
+      requester.role === "Member" &&
+      !new mongoose.Types.ObjectId(userId).equals(requesterId)
+    ) {
+      return res.status(403).json({ message: "Access denied." });
+    }
+
+    const updates = {
+      title: req.body.title,
+      lastname: req.body.lastname,
+      firstname: req.body.firstname,
+      middlename: req.body.middlename,
+      office: req.body.office,
+      username: req.body.username,
+      email: req.body.email,
+    };
+
+    // Only Admins or Superadmins can update role
+    if (requester.role !== "Member" && req.body.role) {
+      updates.role = req.body.role;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found." });
@@ -104,7 +131,6 @@ const updateUserById = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
-
 
 module.exports = {
   getAllUsers,

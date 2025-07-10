@@ -11,16 +11,16 @@ const { authenticate, authorizeAdmin, protect } = require("../middleware/authMid
 const router = express.Router();
 
 // Get all users (admin and superadmin)
-router.get("/", authenticate, authorizeAdmin, getAllUsers);
+router.get("/", authenticate, getAllUsers);
 
 // Approve a user by ID (admin and superadmin)
 router.put("/approve/:id", authenticate, authorizeAdmin, approveUser);
 
-// Edit a user by ID (admin and superadmin)
-router.put("/:id", authenticate, authorizeAdmin, updateUserById);
+// Edit a user by ID
+router.put("/:id", authenticate, protect, updateUserById);
 
-// Get a single user by ID (admin and superadmin)
-router.get("/:id", authenticate, authorizeAdmin, getUserById);
+// Get a single user by ID
+router.get("/:id", authenticate, protect, getUserById);
 
 // Delete a user by ID (admin and superadmin)
 router.delete("/:id", authenticate, authorizeAdmin, deleteUser);

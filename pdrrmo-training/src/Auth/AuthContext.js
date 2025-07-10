@@ -1,10 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://api.pdrrmo.bulacan.gov.ph";
-
 const AuthContext = createContext();
+let inactivityTimer;
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
@@ -25,80 +28,97 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    console.log("Logging out...");
+    console.warn("Logging out user.");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
-    console.log("After logout:", localStorage.getItem("token"), localStorage.getItem("user"));
+    clearTimeout(inactivityTimer);
+    navigate("/signin");
   };
 
-const clearAndRegenerateToken = async () => {
-  const oldToken = localStorage.getItem("token");
-  const currentUser = localStorage.getItem("user");
+  const clearAndRegenerateToken = async () => {
+    const oldToken = localStorage.getItem("token");
+    const currentUser = localStorage.getItem("user");
 
-  // Prevent refresh if no token or user
-  if (!oldToken || !currentUser) {
-    console.warn("User is logged out. Skipping token refresh.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/refresh-token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${oldToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to generate new token.");
+    if (!oldToken || !currentUser) {
+      console.warn("User is logged out. Skipping token refresh.");
+      return;
     }
 
-    const data = await response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/refresh-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${oldToken}`,
+        },
+      });
 
-    // Optional: skip update if user has been removed since fetch started
-    if (!localStorage.getItem("user")) return;
+      if (!response.ok) {
+        throw new Error("Failed to generate new token.");
+      }
 
-    setUser({
-  id: data.id,
-  firstname: data.firstname,
-  lastname: data.lastname,
-  office: data.office,
-  role: data.role,
-  token: data.token,
-});
+      const data = await response.json();
 
-  localStorage.setItem("user", JSON.stringify({
-    id: data.id,
-    firstname: data.firstname,
-    lastname: data.lastname,
-    office: data.office,
-    role: data.role,
-    token: data.token,
-  }));
-  localStorage.setItem("token", data.token);
-  } catch (error) {
-    console.error("Error refreshing token:", error);
-  }
-};
+      if (!localStorage.getItem("user")) return;
+
+      const updatedUser = {
+        id: data.id,
+        firstname: data.firstname,
+        lastname: data.lastname,
+        office: data.office,
+        role: data.role,
+        token: data.token,
+      };
+
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem("token", data.token);
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+    }
+  };
+
+  const startInactivityTimer = () => {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      console.warn("Auto logout due to inactivity.");
+      logout();
+    }, 5 * 60 * 1000); // 5 minutes
+  };
 
   useEffect(() => {
     const checkAndRefreshToken = async () => {
       const token = localStorage.getItem("token");
-
       if (token) {
-        const tokenExpiry = JSON.parse(atob(token.split(".")[1])).exp * 1000;
-        const now = Date.now();
+        try {
+          const decoded = jwtDecode(token);
+          const tokenExpiry = decoded.exp * 1000;
+          const now = Date.now();
 
-        if (tokenExpiry - now < 5 * 60 * 1000) {
-          await clearAndRegenerateToken();
+          if (tokenExpiry < now) {
+            logout(); // Token already expired
+          } else if (tokenExpiry - now < 5 * 60 * 1000) {
+            await clearAndRegenerateToken(); // Refresh token
+          }
+        } catch (err) {
+          console.error("Invalid token:", err);
+          logout();
         }
       }
     };
 
     if (user) {
       checkAndRefreshToken();
+      startInactivityTimer();
+
+      const events = ["mousemove", "keydown", "click", "touchstart", "scroll"];
+      events.forEach((event) => window.addEventListener(event, startInactivityTimer));
+
+      return () => {
+        events.forEach((event) => window.removeEventListener(event, startInactivityTimer));
+        clearTimeout(inactivityTimer);
+      };
     }
   }, [user]);
 

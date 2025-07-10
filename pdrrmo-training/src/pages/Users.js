@@ -33,14 +33,14 @@ const Users = () => {
           },
         });
   
-        if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            alert("Unauthorized access. Please log in again.");
-            localStorage.removeItem("token");
-            window.location.href = "/signin";
-            return;
-          }
-          throw new Error(`Error ${response.status}: Unable to fetch users.`);
+        if (response.status === 401) {
+          alert("Session expired. Please log in again.");
+          localStorage.removeItem("token");
+          window.location.href = "/signin";
+          return;
+        } else if (response.status === 403) {
+          setError("Access denied. You do not have permission to access this resource.");
+          return;
         }
   
         const data = await response.json();

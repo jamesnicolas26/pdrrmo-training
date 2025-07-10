@@ -10,7 +10,12 @@ const authenticate = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.user = decoded;
+
+    req.user = {
+      id: decoded.id || decoded._id,
+      role: decoded.role,
+    };
+
     next();
   } catch (err) {
     console.error("JWT error:", err.message);
@@ -27,7 +32,6 @@ const authorizeRoles = (...roles) => {
   };
 };
 
-// Middleware to protect routes for authenticated users
 const protect = async (req, res, next) => {
   try {
     if (!req.user || !req.user.id) {
@@ -39,7 +43,15 @@ const protect = async (req, res, next) => {
       return res.status(404).json({ message: "User not found." });
     }
 
-    req.user = user; // Attach the full user object to the request
+    // ✅ Merge full user info without overwriting the existing token data
+    req.user = {
+      ...req.user, // includes id and role from token
+      firstname: user.firstname,
+      lastname: user.lastname,
+      office: user.office,
+      // Add anything else you want from DB
+    };
+
     next();
   } catch (error) {
     console.error("Protection error:", error.message);

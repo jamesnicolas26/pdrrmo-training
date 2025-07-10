@@ -20,15 +20,17 @@ function Main() {
           marginBottom: "20px",
         }}
       >
-        <img
-      src={`${process.env.PUBLIC_URL}/pdrrmo-logo.png`}
+    <img
+      // src={`${process.env.PUBLIC_URL}/pdrrmo-logo.png`}
+      src={`/pdrrmo-logo.png`}
       alt="PDRRMO Logo"
       style={{
-      width: "120px",
-      height: "120px",
-      objectFit: "contain",
-  }}
-/>
+        width: "150px",
+        height: "150px",
+        objectFit: "cover", // Ensures it fills the box without distortion
+        borderRadius: "5px" // Optional: soft corners like photo prints
+      }}
+    />
 
       </div>
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const Training = require("../models/Training"); // Adjust the path based on your project structure
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 
 // Middleware to validate ObjectId
 const validateObjectId = (req, res, next) => {
@@ -10,26 +11,75 @@ const validateObjectId = (req, res, next) => {
   next();
 };
 
-// GET all trainings
-// GET all trainings
+// GET all trainings with pagination
+// GET /trainings?page=1&limit=10&type=Technical&sortBy=title&order=asc
 router.get("/", async (req, res) => {
   try {
-    const trainings = await Training.find();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    const transformed = trainings.map((training) => {
-      const obj = training.toObject();
+    const filter = {};
 
-      if (obj.certificate?.data) {
-        obj.certificate = `data:${obj.certificate.contentType};base64,${obj.certificate.data.toString("base64")}`;
-      } else {
-        obj.certificate = "";
+    // Filters from query
+    if (req.query.type) filter.type = req.query.type;
+
+    if (req.query.year) {
+      const year = parseInt(req.query.year);
+      const start = new Date(`${year}-01-01`);
+      const end = new Date(`${year + 1}-01-01`);
+      filter.startDate = { $gte: start, $lt: end };
+    }
+
+    if (req.query.office) filter.office = { $regex: req.query.office, $options: "i" };
+    if (req.query.author) filter.author = { $regex: req.query.author, $options: "i" };
+    if (req.query.search) filter.title = { $regex: req.query.search, $options: "i" };
+
+    // 🛡️ Role-based filtering
+    let role = null;
+    let firstname = null;
+    let lastname = null;
+
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (token) {
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        role = decoded.role;
+        firstname = decoded.firstname;
+        lastname = decoded.lastname;
       }
+    } catch (err) {
+      console.error("JWT decode failed:", err.message);
+      return res.status(401).json({ error: "Invalid or missing token" });
+    }
 
+    if (role === "Member") {
+      filter.author = `${lastname}, ${firstname}`;
+    }
+
+    const sort = {};
+    if (req.query.sortBy) {
+      sort[req.query.sortBy] = req.query.order === "desc" ? -1 : 1;
+    }
+
+    const total = await Training.countDocuments(filter);
+    const trainings = await Training.find(filter).sort(sort).skip(skip).limit(limit);
+
+    const transformed = trainings.map((t) => {
+      const obj = t.toObject();
+      obj.certificate = obj.certificate?.data
+        ? `data:${obj.certificate.contentType};base64,${obj.certificate.data.toString("base64")}`
+        : "";
       return obj;
     });
 
-    res.status(200).json(transformed);
-  } catch (error) {
+    res.json({
+      trainings: transformed,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  } catch (err) {
+    console.error("Server error:", err);
     res.status(500).json({ error: "Failed to fetch trainings" });
   }
 });

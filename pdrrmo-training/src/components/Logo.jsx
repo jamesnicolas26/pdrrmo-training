@@ -3,7 +3,7 @@ import React from "react";
 export default function Logo() {
   return (
     <img
-      src={`${process.env.PUBLIC_URL}images/pdrrmo-logo.png`}
+      src={`${process.env.PUBLIC_URL}/pdrrmo-logo.png`}
       alt="PDRRMO Logo"
       style={{
         width: "120px",

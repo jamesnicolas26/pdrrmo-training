@@ -1,7 +1,8 @@
 {
   "name": "pdrrmo-training",
   "version": "0.1.0",
-  "homepage": "",
+  "_homepage": "/pdrrmo/wp-content/reactpress/apps/pdrrmo-training",
+  "homepage": "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
@@ -10,9 +11,9 @@
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^13.5.0",
     "cross-env": "^7.0.3",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.479.0",
-    "pdrrmo-backend": "file:..",
-    "pdrrmo-training": "file:",
+    "pdrrmo-backend": "file:../pdrrmo-backend",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^7.2.0",

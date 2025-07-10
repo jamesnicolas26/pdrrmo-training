@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import PropTypes from "prop-types";
 import { useAuth } from "../Auth/AuthContext";
 import MediaLibrary from "../components/MediaLibrary";
 
@@ -13,75 +12,93 @@ const Trainings = () => {
   const navigate = useNavigate();
 
   const tableStyle = {
-  width: "100%",
-  borderCollapse: "collapse",
-  marginBottom: "20px",
-};
+    width: "100%",
+    borderCollapse: "collapse",
+    marginBottom: "20px",
+  };
 
-const cleanButtonStyle = {
-  backgroundColor: "#4CAF50",
-  color: "#fff",
-  border: "none",
-  borderRadius: "5px",      // match Edit button
-  cursor: "pointer",
-  fontSize: "12px",         // slightly bigger
-  padding: "5px 10px",      // similar to Edit/Delete buttons
-  whiteSpace: "nowrap",
-  display: "inline-block",
-};
+  const cleanButtonStyle = {
+    backgroundColor: "#4CAF50",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontSize: "12px",
+    padding: "5px 10px",
+    whiteSpace: "nowrap",
+    display: "inline-block",
+  };
 
-const thTdStyle = {
-  border: "1px solid #ddd",
-  padding: "8px",
-  textAlign: "left",
-  cursor: "pointer",
-};
+  const thTdStyle = {
+    border: "1px solid #ddd",
+    padding: "8px",
+    textAlign: "left",
+    cursor: "pointer",
+  };
 
-const rowHoverStyle = {
-  backgroundColor: "#f9f9f9",
-  transition: "background-color 0.2s",
-};
-
-const handleSearchChange = (e) => {
-  setSearchQuery(e.target.value);
-};
-
-const handleFilterChange = (e) => {
-  setFilterType(e.target.value);
-};
-
-const handleYearChange = (e) => {
-  setFilterYear(e.target.value);
-};
-
+  const rowHoverStyle = {
+    backgroundColor: "#f9f9f9",
+    transition: "background-color 0.2s",
+  };
 
   const [trainings, setTrainings] = useState([]);
   const [userRole, setUserRole] = useState(user?.role || "");
-  const [filterType, setFilterType] = useState("");
-  const [filterYear, setFilterYear] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [filters, setFilters] = useState({
+    search: "",
+    type: "",
+    year: "",
+    office: "",
+    author: "",
+  });
+  const [sortConfig, setSortConfig] = useState({ sortBy: null, order: "asc" });
   const [selectedCertificate, setSelectedCertificate] = useState(null);
-  const [filterOffice, setFilterOffice] = useState("");
-  const [filterAuthor, setFilterAuthor] = useState("");
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
 
-  useEffect(() => {
-    const fetchTrainings = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/trainings`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        if (!response.ok) throw new Error("Failed to fetch trainings");
-        const data = await response.json();
-        setTrainings(data);
-      } catch (error) {
-        console.error("Error fetching trainings:", error.message);
-      }
-    };
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+  const [totalPages, setTotalPages] = useState(1);
 
-    fetchTrainings();
-  }, []);
+  const fetchTrainings = async (page = 1) => {
+    try {
+      const query = new URLSearchParams({
+        page,
+        limit: itemsPerPage,
+        search: filters.search,
+        type: filters.type,
+        year: filters.year,
+        office: filters.office,
+        author: filters.author,
+        sortBy: sortConfig.sortBy || "",
+        order: sortConfig.order,
+      });
+
+      const response = await fetch(`${API_BASE_URL}/trainings?${query.toString()}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch trainings");
+      const data = await response.json();
+      setTrainings(data.trainings);
+      setTotalPages(data.totalPages);
+      setCurrentPage(data.currentPage);
+    } catch (error) {
+      console.error("Error fetching trainings:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchTrainings(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+  if (user?.role === "Member") {
+    setFilters((prev) => ({
+      ...prev,
+      author: `${user.lastname}, ${user.firstname}`,
+      }));
+    }
+  }, [user]);
+
 
   const deleteTraining = async (id) => {
     try {
@@ -99,94 +116,69 @@ const handleYearChange = (e) => {
     }
   };
 
+  const handleSort = (key) => {
+    const order = sortConfig.sortBy === key && sortConfig.order === "asc" ? "desc" : "asc";
+    setSortConfig({ sortBy: key, order });
+    fetchTrainings(currentPage);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleApplyFilters = () => {
+    setCurrentPage(1);
+    fetchTrainings(1);
+  };
+
   const exportToExcel = () => {
+    const data = trainings.map((training) => ({
+      Name: training.author,
+      Office: training.office || "",
+      "Title of Training Attended": training.title,
+      "Start Date": formatDate(training.startDate),
+      "End Date": formatDate(training.endDate),
+      "Number of Hours": training.hours,
+      "Type of Training": training.type,
+      "Sponsored/Conducted By": training.sponsor,
+      Certificate: training.certificate ? "Yes" : "No",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const columnWidths = Object.keys(data[0] || {}).map((key) => ({
+      wch: Math.max(
+        key.length,
+        ...data.map((row) => (row[key] ? row[key].toString().length : 0))
+      ) + 2,
+    }));
+    worksheet["!cols"] = columnWidths;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Trainings");
+
+    const timestamp = new Date().toISOString().replace(/[-:T]/g, "_").split(".")[0];
+    XLSX.writeFile(workbook, `trainings_${timestamp}.xlsx`);
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
+    const year = date.getFullYear();
     const month = `${date.getMonth() + 1}`.padStart(2, "0");
     const day = `${date.getDate()}`.padStart(2, "0");
-    const year = date.getFullYear();
-    return `${month}-${day}-${year}`;
-  };
-
-  const data = filteredTrainings.map((training) => ({
-    Name: training.author,
-    Office: training.office || "",
-    "Title of Training Attended": training.title,
-    "Start Date": formatDate(training.startDate),
-    "End Date": formatDate(training.endDate),
-    "Number of Hours": training.hours,
-    "Type of Training": training.type,
-    "Sponsored/Conducted By": training.sponsor,
-    Certificate: training.certificate ? "Yes" : "No",
-  }));
-
-  const worksheet = XLSX.utils.json_to_sheet(data);
-  const columnWidths = Object.keys(data[0] || {}).map((key) => ({
-    wch: Math.max(
-      key.length,
-      ...data.map((row) => (row[key] ? row[key].toString().length : 0))
-    ) + 2,
-  }));
-
-  worksheet["!cols"] = columnWidths;
-
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Trainings");
-
-  const timestamp = new Date().toISOString().replace(/[-:T]/g, "_").split(".")[0];
-  XLSX.writeFile(workbook, `trainings_${timestamp}.xlsx`);
-};
-
-  const handleSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const sortedTrainings = [...trainings].sort((a, b) => {
-    if (!sortConfig.key) return 0;
-    const valueA = a[sortConfig.key];
-    const valueB = b[sortConfig.key];
-    if (valueA < valueB) return sortConfig.direction === "asc" ? -1 : 1;
-    if (valueA > valueB) return sortConfig.direction === "asc" ? 1 : -1;
-    return 0;
-  });
-
-  const filteredTrainings = sortedTrainings.filter((training) => {
-    const isAuthor = training.author === `${user.lastname}, ${user.firstname}`;
-    const canView = userRole === "Admin" || userRole === "superadmin" || isAuthor;
-    const matchesFilter =
-      (!filterType || training.type.toLowerCase() === filterType.toLowerCase()) &&
-      (!filterYear || (training.startDate && training.startDate.includes(filterYear))) &&
-      (userRole === "Admin" || userRole === "superadmin"
-        ? (!filterOffice || (training.office || "").toLowerCase().includes(filterOffice.toLowerCase())) &&
-          (!filterAuthor || (training.author || "").toLowerCase().includes(filterAuthor.toLowerCase()))
-        : true);
-    const matchesSearch = !searchQuery || training.title.toLowerCase().includes(searchQuery.toLowerCase());
-    return canView && matchesFilter && matchesSearch;
-  });
-
-  const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`;
   };
 
   const getSortIcon = (key) => {
-    if (sortConfig.key !== key) return null;
-    return sortConfig.direction === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />;
+    if (sortConfig.sortBy !== key) return null;
+    return sortConfig.order === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />;
   };
 
   return (
     <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "20px" }}>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-     <h1 style={{ margin: 0 }}>Trainings</h1>
+    <h1 style={{ margin: 0 }}>Trainings</h1>
 
     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
       <button onClick={() => navigate("/addtraining")} style={cleanButtonStyle}>
@@ -204,50 +196,53 @@ const handleYearChange = (e) => {
     </div>
       </div>
       <div style={{ marginBottom: "20px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-        <input
-          type="text"
-          placeholder="Search by title..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          style={{ padding: "10px", flexGrow: 1, borderRadius: "5px", border: "1px solid #ddd" }}
-        />
-        <select
-          value={filterType}
-          onChange={handleFilterChange}
-          style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ddd" }}
-        >
-          <option value="">All Types</option>
-          <option value="Supervisory">Supervisory</option>
-          <option value="Managerial">Managerial</option>
-          <option value="Technical">Technical</option>
-        </select>
+            <input
+              type="text"
+              name="search"
+              placeholder="Search by title..."
+              value={filters.search}
+              onChange={handleInputChange}
+            />
+
+            <select name="type" value={filters.type} onChange={handleInputChange}>
+              <option value="">All Types</option>
+              <option value="Technical">Technical</option>
+              <option value="Supervisory">Supervisory</option>
+              <option value="Managerial">Managerial</option>
+            </select>
+
+            <input
+              type="number"
+              name="year"
+              placeholder="e.g., 2024"
+              min="1900"
+              max="2099"
+              value={filters.year}
+              onChange={handleInputChange}
+            />
+
         {(userRole === "Admin" || userRole === "superadmin") && (
           <>
             <input
               type="text"
-              placeholder="Filter by office..."
-              value={filterOffice}
-              onChange={(e) => setFilterOffice(e.target.value)}
-              style={{ padding: "10px", flexGrow: 1, borderRadius: "5px", border: "1px solid #ddd" }}
+              name="office"
+              value={filters.office}
+              onChange={handleInputChange}
             />
             <input
               type="text"
+              name="author"
               placeholder="Filter by author..."
-              value={filterAuthor}
-              onChange={(e) => setFilterAuthor(e.target.value)}
-              style={{ padding: "10px", flexGrow: 1, borderRadius: "5px", border: "1px solid #ddd" }}
+              value={filters.author}
+              onChange={handleInputChange}
             />
           </>
         )}
-        <input
-          type="text"
-          placeholder="Filter by year..."
-          value={filterYear}
-          onChange={handleYearChange}
-          style={{ padding: "10px", flexGrow: 1, borderRadius: "5px", border: "1px solid #ddd" }}
-        />
+            <button onClick={handleApplyFilters} style={cleanButtonStyle}>
+              Apply Filters
+            </button>
       </div>
-      {filteredTrainings.length > 0 ? (
+      {trainings.length > 0 ? (
         <table style={tableStyle}>
           <thead>
             <tr>
@@ -272,7 +267,7 @@ const handleYearChange = (e) => {
             </tr>
           </thead>
           <tbody>
-            {filteredTrainings.map((training, index) => (
+            {trainings.map((training, index) => (
               <tr
                 key={index}
                 style={rowHoverStyle}
@@ -288,12 +283,13 @@ const handleYearChange = (e) => {
                 <td style={thTdStyle}>{training.title}</td>
                 <td style={thTdStyle}>{formatDate(training.startDate)}</td>
                 <td style={thTdStyle}>{formatDate(training.endDate)}</td>
-                <td style={{thTdStyle, textAlign: "center" }}>{training.hours}</td>
+                <td style={{ ...thTdStyle, textAlign: "center" }}>{training.hours}</td>
                 <td style={thTdStyle}>{training.type}</td>
                 <td style={thTdStyle}>{training.sponsor}</td>
                 <td style={thTdStyle}>
                   {training.certificate ? (
                     <img
+                      loading="lazy"
                       src={training.certificate}
                       alt="Certificate"
                       style={{ width: "100px", height: "auto", borderRadius: "5px", cursor: "pointer" }}
@@ -346,6 +342,27 @@ const handleYearChange = (e) => {
         <p>No trainings found. Try adjusting the filters or search term.</p>
       )}
 
+      {totalPages > 1 && (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px", gap: "8px" }}>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              style={{
+                padding: "6px 12px",
+                backgroundColor: currentPage === i + 1 ? "#4CAF50" : "#fff",
+                color: currentPage === i + 1 ? "#fff" : "#000",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      )}
+
       {showMediaLibrary && (
         <MediaLibrary
           certificates={trainings.filter(t => t.certificate).map(t => t.certificate)}
@@ -388,10 +405,6 @@ const handleYearChange = (e) => {
       )}
     </div>
   );
-};
-
-Trainings.propTypes = {
-  trainings: PropTypes.array,
 };
 
 export default Trainings;

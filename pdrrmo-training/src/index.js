@@ -24,11 +24,12 @@ const AppWrapper = () => {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-  <AuthProvider>
-  <Router basename = "">
-    <AppWrapper />
+  <Router basename="/pdrrmo-training">
+  {/* <Router basename="/pdrrmo/wp-content/reactpress/apps/pdrrmo-training"> */}
+    <AuthProvider>
+      <AppWrapper />
+    </AuthProvider>
   </Router>
-  </AuthProvider>
-  </React.StrictMode>
+</React.StrictMode>
 );
 

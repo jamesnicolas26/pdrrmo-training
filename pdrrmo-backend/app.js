@@ -13,7 +13,7 @@ const trainingTitleRoute = require("./routes/trainingTitles");
 const officeRoutes = require("./routes/officeRoutes");
 const trainingRoutes = require("./routes/trainingRoutes")
 
-const { authenticate, authorizeAdmin } = require("./middleware/authMiddleware");
+const { authenticate, protect, authorizeAdmin } = require("./middleware/authMiddleware");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,53 +45,52 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 // });
 // app.use(limiter);
 
-// ✅ CORS Configuration
-// const allowedOrigins = [
-//   "https://bulacan.gov.ph",
-//   "https://pdrrmo.bulacan.gov.ph",
-//   "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
-//   "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training",
-//   "https://pdrrmo-training-frontend.onrender.com",
-// ];
+// // ✅ CORS Configuration
+const allowedOrigins = [
+  "https://bulacan.gov.ph",
+  "https://pdrrmo.bulacan.gov.ph",
+  "https://pdrrmo.bulacan.gov.ph/pdrrmo-training",
+  "https://pdrrmo.bulacan.gov.ph/wp-content/reactpress/apps/pdrrmo-training",
+];
 
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       console.log("✅ CORS allowed for:", origin || "Direct server call");
-//       callback(null, true);
-//     } else {
-//       console.error("❌ CORS not allowed for:", origin);
-//       callback(new Error("CORS not allowed"));
-//     }
-//   },
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   credentials: true,
-//   optionsSuccessStatus: 200,
-// };
-// app.use(cors(corsOptions));
-// app.options("*", cors(corsOptions)); // ✅ Handle pre-flight requests
-
-app.use(cors({
-  origin: "*", // Allow all origins
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      console.log("✅ CORS allowed for:", origin || "Direct server call");
+      callback(null, true);
+    } else {
+      console.error("❌ CORS not allowed for:", origin);
+      callback(new Error("CORS not allowed"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-}));
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // ✅ Handle pre-flight requests
+
+// app.use(cors({
+//   origin: "*", // Allow all origins
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization"],
+// }));
 
 // ✅ API Routes
-app.use("/api/offices", officeRoutes);
+app.use("/offices", officeRoutes);
 console.log("✅ Registered route: /offices");
 
-app.use("/api", authRoutes);
+app.use("/", authRoutes);
 console.log("✅ Registered route: /auth");
 
-app.use("/api/users", authenticate, authorizeAdmin, userRoutes);
+app.use("/users", authenticate, protect, userRoutes);
 console.log("✅ Registered route: /users");
 
-app.use("/api/training-titles", trainingTitleRoute);
+app.use("/training-titles", trainingTitleRoute);
 console.log("✅ Registered route: /training-titles");
 
-app.use("/api/trainings", trainingRoutes);
+app.use("/trainings", trainingRoutes);
 
 // ✅ Test Endpoints
 app.get("/status", (req, res) => {

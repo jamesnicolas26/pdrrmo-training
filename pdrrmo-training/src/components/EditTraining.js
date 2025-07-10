@@ -9,6 +9,9 @@ const EditTraining = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+const [trainingTitles, setTrainingTitles] = useState([]);
+const [newTitle, setNewTitle] = useState("");
+
   const [formData, setFormData] = useState({
     title: "",
     type: "",
@@ -48,17 +51,36 @@ const EditTraining = () => {
     })();
   }, [id]);
 
+  useEffect(() => {
+  const fetchTrainingTitles = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/training-titles`);
+      if (!res.ok) throw new Error("Failed to fetch training titles");
+      const titles = await res.json();
+      setTrainingTitles(titles);
+    } catch (error) {
+      console.error("Error loading titles:", error);
+    }
+  };
+  fetchTrainingTitles();
+  }, []);
+
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFormData((prev) => ({
-          ...prev,
-          certificate: reader.result, // base64 string
-        }));
-      };
-      reader.readAsDataURL(file);
+  const file = e.target.files[0];
+  if (file) {
+    if (file.size > 2 * 1024 * 1024) { // 2MB
+      alert("File size exceeds 2MB. Please upload a smaller file.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({
+        ...prev,
+        certificate: reader.result,
+      }));
+    };
+    reader.readAsDataURL(file);
     }
   };
 
@@ -102,16 +124,23 @@ const EditTraining = () => {
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Edit Training</h1>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-        {/* Title */}
+        {/* Title Dropdown */}
         <div>
           <label style={labelStyle}>Title:</label>
-          <input
+          <select
+            required
             name="title"
             value={formData.title}
             onChange={handleChange}
-            required
-            style={inputStyle}
-          />
+            style={{ width: "100%", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}
+          >
+            <option value="" disabled>Select Training Title</option>
+            {trainingTitles.map((title) => (
+              <option key={title._id} value={title.name}>
+                {title.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Type */}

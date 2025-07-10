@@ -1,16 +1,24 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /pdrrmo-training/
-  # RewriteBase /pdrrmo-training/
 
-  # Serve API requests directly
-  RewriteCond %{REQUEST_URI} ^/pdrrmo-training/api
-  # RewriteCond %{REQUEST_URI} ^/pdrrmo-training/pdrrmo-backend/api
+  # ✅ Let real files and folders through
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # React Router fallback for SPA
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^ /pdrrmo-training/build/index.html [L]
-  # RewriteRule ^ /pdrrmo-training/index.html [L]
+  # ✅ Let React handle all routes, including /reset-password/*
+  RewriteRule ^ index.html [L]
 </IfModule>
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteBase /pdrrmo/wp-content/reactpress/apps/pdrrmo-training/
+
+#   # Allow direct access to real files
+#   RewriteCond %{REQUEST_FILENAME} -f [OR]
+#   RewriteCond %{REQUEST_FILENAME} -d
+#   RewriteRule ^ - [L]
+
+#   # Redirect all other requests to index.html
+#   RewriteRule ^ index.html [L]
+# </IfModule>

@@ -170,18 +170,25 @@ const AddTraining = ({ addTraining }) => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFormData((prev) => ({
-          ...prev,
-          certificate: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+  const file = e.target.files[0];
+  if (file) {
+    if (file.size > 2 * 1024 * 1024) { // 2MB in bytes
+      alert("File size exceeds 2MB. Please upload a smaller file.");
+      fileInputRef.current.value = ""; // clear the input
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFormData((prev) => ({
+        ...prev,
+        certificate: reader.result,
+      }));
+    };
+    reader.readAsDataURL(file);
     }
   };
+
 
   const handleSubmit = async (e) => {
   e.preventDefault();

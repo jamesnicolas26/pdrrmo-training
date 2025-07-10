@@ -130,7 +130,7 @@ export default function App() {
         <Route
           path="/edituser/:id"
           element={
-            <PrivateRoute requiredRole={["Admin", "superadmin"]}>
+            <PrivateRoute>  {/* No role restriction here */}
               <EditUser users={users} updateUser={updateUser} />
             </PrivateRoute>
           }
