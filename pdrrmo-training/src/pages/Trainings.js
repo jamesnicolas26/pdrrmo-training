@@ -214,7 +214,7 @@ const Trainings = () => {
             <input
               type="number"
               name="year"
-              placeholder="e.g., 2024"
+              placeholder="Year"
               min="1900"
               max="2099"
               value={filters.year}
@@ -226,6 +226,7 @@ const Trainings = () => {
             <input
               type="text"
               name="office"
+              placeholder="Filter by office..."
               value={filters.office}
               onChange={handleInputChange}
             />

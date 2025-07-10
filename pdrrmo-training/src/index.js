@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { BrowserRouter as Router, useLocation } from "react-router-dom";
+import { HashRouter as Router, useLocation } from "react-router-dom";
 import { AuthProvider } from "./Auth/AuthContext";
 import Navbar from "./components/Navbar";
 
@@ -24,7 +24,7 @@ const AppWrapper = () => {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-  <Router basename="/pdrrmo-training">
+  <Router>
   {/* <Router basename="/pdrrmo/wp-content/reactpress/apps/pdrrmo-training"> */}
     <AuthProvider>
       <AppWrapper />

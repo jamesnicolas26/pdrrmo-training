@@ -1,6 +1,6 @@
 import './index.css';
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom"; // ✅ Add useNavigate
+import { Routes, Route } from "react-router-dom";
 import Main from "./pages/Main";
 import Trainings from "./pages/Trainings";
 import Users from "./pages/Users";
@@ -17,17 +17,8 @@ import EditTraining from "./components/EditTraining";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 
-export default function App() {
-  const navigate = useNavigate(); // ✅ Required for programmatic navigation
 
-  // ✅ Add this useEffect BELOW your other useEffects:
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const path = params.get("path");
-    if (path) {
-      navigate(`#${path}`);
-    }
-  }, [navigate]);
+export default function App() {
 
   const [users, setUsers] = useState(() => {
     try {
@@ -99,64 +90,64 @@ export default function App() {
   };
 
   return (
-    <Routes>
-      <Route path="/signin" element={<Login />} />
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <Main />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/trainings"
-        element={
-          <PrivateRoute>
-            <Trainings
-              trainings={trainings}
-              deleteTraining={deleteTraining}
-            />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/addtraining"
-        element={
-          <PrivateRoute>
-            <AddTraining addTraining={addTraining} />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/users"
-        element={
-          <RoleProtectedRoute requiredRole={["Admin", "superadmin"]}>
-            <Users users={users} deleteUser={deleteUser} />
-          </RoleProtectedRoute>
-        }
-      />
-      <Route
-        path="/edituser/:id"
-        element={
-          <PrivateRoute>
-            <EditUser users={users} updateUser={updateUser} />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/edittraining/:id" element={<EditTraining />} />
-      <Route
-        path="/signout"
-        element={
-          <PrivateRoute>
-            <Logout />
-          </PrivateRoute>
-        }
-    />
-      <Route path="/signup" element={<Register addUser={addUser} />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
-      <Route path="*" element={<div>404 - Page Not Found</div>} />
-    </Routes>
+      <Routes>
+        <Route path="/signin" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Main />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/trainings"
+          element={
+            <PrivateRoute>
+              <Trainings
+                trainings={trainings}
+                deleteTraining={deleteTraining}
+              />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/addtraining"
+          element={
+            <PrivateRoute>
+              <AddTraining addTraining={addTraining} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <RoleProtectedRoute requiredRole={["Admin", "superadmin"]}>
+              <Users users={users} deleteUser={deleteUser} />
+            </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/edituser/:id"
+          element={
+            <PrivateRoute>  {/* No role restriction here */}
+              <EditUser users={users} updateUser={updateUser} />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/edittraining/:id" element={<EditTraining />} />
+        <Route
+          path="/signout"
+          element={
+            <PrivateRoute>
+              <Logout />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/signup" element={<Register addUser={addUser} />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="*" element={<div>404 - Page Not Found</div>} />
+      </Routes>
   );
 }

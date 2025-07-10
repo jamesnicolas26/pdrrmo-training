@@ -21,8 +21,8 @@ function Main() {
         }}
       >
     <img
-      // src={`${process.env.PUBLIC_URL}/pdrrmo-logo.png`}
-      src={`/pdrrmo-logo.png`}
+      src={`${process.env.PUBLIC_URL}/pdrrmo-logo.png`}
+      // src={`/pdrrmo-logo.png`}
       alt="PDRRMO Logo"
       style={{
         width: "150px",
