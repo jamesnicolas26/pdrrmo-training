@@ -128,9 +128,31 @@ const forgotPassword = async (req, res) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-  const message = `Reset your password:\n\n${resetUrl}\n\nIf you didn't request this, ignore.`;
-  await sendEmail({ to: user.email, subject: "Password Reset", text: message });
+const resetUrl = `${process.env.CLIENT_URL}/#/reset-password/${resetToken}`;
+
+const messageText = `Hello,
+
+You requested a password reset.
+
+Click the link below to reset your password:
+${resetUrl}
+
+If you didn’t request this, you can ignore this email.`;
+
+const messageHtml = `
+  <p>Hello,</p>
+  <p>You requested a password reset.</p>
+  <p>Click the link below to reset your password:</p>
+  <p><a href="${resetUrl}">${resetUrl}</a></p>
+  <p>If you didn’t request this, you can ignore this email.</p>
+`;
+
+await sendEmail({
+  to: user.email,
+  subject: "Password Reset",
+  text: messageText,
+  html: messageHtml,
+});
 
   res.json({ message: "Reset email sent" });
 };
