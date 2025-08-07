@@ -50,7 +50,7 @@ const Trainings = () => {
     office: "",
     author: "",
   });
-  const [sortConfig, setSortConfig] = useState({ sortBy: null, order: "asc" });
+  const [sortConfig, setSortConfig] = useState({ sortBy: "_id", order: "desc" });
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
 

@@ -63,10 +63,12 @@ const Login = () => {
 
   const inputStyle = {
     width: "100%",
-    padding: "0.8rem",
+    padding: "0.8rem 1rem",
     borderRadius: "5px",
     border: "1px solid #dcdfe6",
     fontSize: "1rem",
+    backgroundColor: "#ecf4ff",
+    marginTop: "0.25rem",
   };
 
   return (
@@ -77,6 +79,7 @@ const Login = () => {
         alignItems: "center",
         height: "100vh",
         backgroundColor: "#f0f4f8",
+        padding: "1rem",
       }}
     >
       <div
@@ -84,7 +87,7 @@ const Login = () => {
           backgroundColor: "#ffffff",
           borderRadius: "10px",
           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          padding: "2rem",
+          padding: "50px 50px",
           maxWidth: "400px",
           width: "100%",
           textAlign: "center",

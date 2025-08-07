@@ -26,6 +26,25 @@ const EditUser = ({ updateUser }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [offices, setOffices] = useState([]);
+
+  useEffect(() => {
+    const fetchOffices = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/offices`);
+        const data = await response.json();
+        const sortedOffices = (data.offices || []).sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        setOffices(sortedOffices);
+      } catch (error) {
+        console.error("Error fetching offices:", error.message);
+      }
+    };
+
+    fetchOffices();
+  }, []);
+
   // Access control
   useEffect(() => {
     if (!loggedInUser) return;
@@ -154,7 +173,16 @@ const EditUser = ({ updateUser }) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#f0f4f8" }}>
-      <div style={{ backgroundColor: "#ffffff", borderRadius: "10px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", padding: "2rem", maxWidth: "500px", width: "100%" }}>
+      <div
+          style={{
+            backgroundColor: "#ffffff",
+            borderRadius: "10px",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            padding: "50px 50px",       // <- adds even horizontal spacing
+            maxWidth: "500px",
+            width: "100%",
+          }}
+        >
         <h1 style={{ color: "#2c3e50", marginBottom: "1rem", textAlign: "center" }}>Edit User</h1>
 
         {isLoading ? (
@@ -163,11 +191,45 @@ const EditUser = ({ updateUser }) => {
           <form onSubmit={handleSubmit}>
             {error && <p style={{ color: "red", textAlign: "center", marginBottom: "1rem" }}>{error}</p>}
 
-            {["title", "lastname", "firstname", "middlename", "office", "username", "email"].map((field) => (
+        {/* Title Dropdown */}
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", marginBottom: "0.5rem" }}>Title</label>
+                <select
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem",
+                    borderRadius: "5px",
+                    border: "1px solid #dcdfe6",
+                  }}
+                >
+                  <option value="" disabled>Select Title</option>
+                  <option value="Mr.">Mr.</option>
+                  <option value="Ms.">Ms.</option>
+                  <option value="Mrs.">Mrs.</option>
+                  <option value="Atty.">Atty.</option>
+                  <option value="Dr.">Dr.</option>
+                  <option value="Engr.">Engr.</option>
+                  <option value="P/Lt. Col.">P/Lt. Col.</option>
+                  <option value="Rev. Fr.">Rev. Fr.</option>
+                  <option value="FSSupt.">FSSupt.</option>
+                  <option value="P/Col.">P/Col.</option>
+                  <option value="Sr.">Sr.</option>
+                  <option value="Kap.">Kap.</option>
+                  <option value="Lt. Col.">Lt. Col.</option>
+                  <option value="PD">PD</option>
+                </select>
+              </div>
+
+            {/* Lastname, Firstname, Middlename Inputs */}
+            {["lastname", "firstname", "middlename"].map((field) => (
               <div style={{ marginBottom: "1rem" }} key={field}>
                 <label style={{ display: "block", marginBottom: "0.5rem", textTransform: "capitalize" }}>{field}</label>
                 <input
-                  type={field === "email" ? "email" : "text"}
+                  type="text"
                   name={field}
                   value={formData[field]}
                   onChange={handleChange}
@@ -176,6 +238,49 @@ const EditUser = ({ updateUser }) => {
                 />
               </div>
             ))}
+
+              {/* Office Dropdown */}
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ display: "block", marginBottom: "0.5rem" }}>Office</label>
+                <select
+                  name="office"
+                  value={formData.office}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  style={{
+                    width: "100%",
+                    padding: "0.8rem",
+                    borderRadius: "5px",
+                    border: "1px solid #dcdfe6",
+                  }}
+                >
+                  <option value="" disabled>Select Office</option>
+                  {offices.length > 0 ? (
+                    offices.map((office, index) => (
+                      <option key={index} value={office.name}>
+                        {office.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="">Loading offices...</option>
+                  )}
+                </select>
+              </div>
+
+    {/* Resume remaining fields */}
+    {["username", "email"].map((field) => (
+      <div style={{ marginBottom: "1rem" }} key={field}>
+        <label style={{ display: "block", marginBottom: "0.5rem", textTransform: "capitalize" }}>{field}</label>
+        <input
+          type={field === "email" ? "email" : "text"}
+          name={field}
+          value={formData[field]}
+          onChange={handleChange}
+          disabled={isLoading}
+          style={{ width: "100%", padding: "0.8rem", borderRadius: "5px", border: "1px solid #dcdfe6" }}
+        />
+      </div>
+    ))}
 
             <div style={{ marginBottom: "1rem" }}>
               <label style={{ display: "block", marginBottom: "0.5rem" }}>Role</label>

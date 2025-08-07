@@ -251,7 +251,7 @@ const AddTraining = ({ addTraining }) => {
 
   return (
     <div>
-      <div style={{ maxWidth: "600px", margin: "20px auto", padding: "20px", border: "1px solid #ccc", borderRadius: "10px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
+      <div style={{ maxWidth: "600px", margin: "20px auto", padding: "50px 50px", border: "1px solid #ccc", borderRadius: "10px", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)" }}>
         <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Add Training</h1>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
         <div>

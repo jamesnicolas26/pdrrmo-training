@@ -116,7 +116,7 @@ const [newTitle, setNewTitle] = useState("");
     <div style={{
       maxWidth: "600px",
       margin: "20px auto",
-      padding: "20px",
+      padding: "50px 50px",
       border: "1px solid #ccc",
       borderRadius: "10px",
       boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)"

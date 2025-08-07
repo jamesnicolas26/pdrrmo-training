@@ -25,19 +25,22 @@ const Register = () => {
   const [offices, setOffices] = useState([]); // Make sure it's initialized as an empty array
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchOffices = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/offices`);
-        const data = await response.json();
-        setOffices(data.offices || []); // Safely set an empty array if no offices data
-      } catch (error) {
-        console.error("Error fetching offices:", error.message);
-      }
-    };
+    useEffect(() => {
+      const fetchOffices = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/offices`);
+          const data = await response.json();
+          const sortedOffices = (data.offices || []).sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+          setOffices(sortedOffices);
+        } catch (error) {
+          console.error("Error fetching offices:", error.message);
+        }
+      };
 
-    fetchOffices();
-  }, []);
+      fetchOffices();
+    }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -133,13 +136,13 @@ const Register = () => {
   };
 
   const containerStyle = {
-    maxWidth: "800px",
-  margin: "0 auto",
-  padding: "20px",
-  backgroundColor: "#f9f9f9",
-  borderRadius: "8px",
-  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-  marginTop: "100px", // Add this line for space before the form
+    maxWidth: "900px",               // optionally increased width
+    margin: "40px auto",             // adds margin at top and bottom
+    padding: "50px 50px",                 // increased padding inside the card
+    backgroundColor: "#f9f9f9",
+    borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    gap: "20px",
   };
 
   const labelStyle = {
@@ -150,10 +153,11 @@ const Register = () => {
 
   const inputStyle = {
     width: "100%",
-    padding: "10px",
+    padding: "12px 14px",           // more inner spacing
+    fontSize: "16px",
     border: "1px solid #ccc",
-    borderRadius: "4px",
-    marginBottom: "10px",
+    borderRadius: "6px",
+    marginBottom: "5px",            // reduced to avoid extra spacing inside grid
   };
 
   const buttonStyle = {
@@ -167,10 +171,10 @@ const Register = () => {
 
   const gridStyle = {
     display: "grid",
-    gap: "20px",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    marginBottom: "20px",
-  };
+    gap: "24px",                     // wider spacing between fields
+    gridTemplateColumns: "repeat(auto-fit, minmax(600px, 1fr))", // more responsive width
+    marginBottom: "30px",           // more space before next group
+  }; 
 
   return (
     <div style={containerStyle}>
@@ -187,14 +191,25 @@ const Register = () => {
               onChange={handleChange}
               style={inputStyle}
             >
-              <option value="">Select Title</option>
+              <option value="" disabled>Select Title</option>
               <option value="Mr.">Mr.</option>
               <option value="Ms.">Ms.</option>
               <option value="Mrs.">Mrs.</option>
+              <option value="Atty.">Atty.</option>
+              <option value="Dr.">Dr.</option>
+              <option value="Engr.">Engr.</option>
+              <option value="P/Lt. Col.">P/Lt. Col.</option>
+              <option value="Rev. Fr.">Rev. Fr.</option>
+              <option value="FSSupt.">FSSupt.</option>
+              <option value="P/Col.">P/Col.</option>
+              <option value="Sr.">Sr.</option>
+              <option value="Kap.">Kap.</option>
+              <option value="Lt. Col.">Lt. Col.</option>
+              <option value="PD">PD</option>
             </select>
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>
               Last Name {isFieldEmpty("lastname") && <span style={{ color: "red" }}>*</span>}
             </label>
@@ -208,7 +223,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>
               First Name {isFieldEmpty("firstname") && <span style={{ color: "red" }}>*</span>}
             </label>
@@ -222,7 +237,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>Middle Name (Optional)</label>
             <input
               type="text"
@@ -234,7 +249,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>
               Office {isFieldEmpty("office") && <span style={{ color: "red" }}>*</span>}
             </label>
@@ -244,7 +259,7 @@ const Register = () => {
               onChange={handleChange}
               style={inputStyle}
             >
-              <option value="">Select Office</option>
+              <option value="" disabled>Select Office</option>
               {offices.length > 0 ? (
                 offices.map((office, index) => (
                   <option key={index} value={office.name}>
@@ -260,7 +275,7 @@ const Register = () => {
 
         <div style={gridStyle}>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>
               Username {isFieldEmpty("username") && <span style={{ color: "red" }}>*</span>}
             </label>
@@ -274,7 +289,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>
               Email {isFieldEmpty("email") && <span style={{ color: "red" }}>*</span>}
             </label>
@@ -288,7 +303,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>
               Password {isFieldEmpty("password") && <span style={{ color: "red" }}>*</span>}
             </label>
@@ -302,7 +317,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
+          <div style={{ flex: 1 }}>
             <label style={labelStyle}>
               Confirm Password {isFieldEmpty("confirmPassword") && <span style={{ color: "red" }}>*</span>}
             </label>
